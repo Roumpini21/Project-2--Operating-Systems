@@ -107,7 +107,7 @@ void fill_queue (queue* q, FILE* fp) {
 void print(struct Queue* q){
 	struct proc* ptr = q->head;
 	while(ptr!=NULL){
-		printf("%d\n", ptr->name);
+		printf("%s\n", ptr->name);
 		ptr = ptr->next;
 	}
 }
