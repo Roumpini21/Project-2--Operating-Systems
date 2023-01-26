@@ -120,11 +120,11 @@ void print(struct Queue* q){
 
 void batch(struct Queue* q){
 	int c = count(q);
-	double start_time, end_time;
+	struct timespec start_time, end_time;
     struct proc* current_proc;
     while (q->head != NULL) {
         current_proc = deQueue(q);
-        start_time = time(NULL);
+        clock_gettime(CLOCK_MONOTONIC, &start_time);
 		char path[20] = "";
 		strcat(path, "../work/");
 		strcat(path, current_proc->name);
@@ -135,8 +135,8 @@ void batch(struct Queue* q){
         } else {
 			current_proc->pid = pid;
             wait(NULL);
-            end_time = time(NULL);
-            double elapsed_time = difftime(end_time, start_time);
+            clock_gettime(CLOCK_MONOTONIC, &end_time);
+            double elapsed_time = (end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec) / 1000000000.0;
             printf("Process %d took %f seconds to finish.\n", current_proc->pid, elapsed_time);
         }
     }
