@@ -131,7 +131,7 @@ void batch(struct Queue* q){
         pid_t pid = fork();
         if (pid == 0) {
 			current_proc->pid = getpid();
-            execl(path, current_proc->name, NULL);
+            execl(path, path, NULL);
         } else {
             wait(&current_proc->pid);
             end_time = time(NULL);
