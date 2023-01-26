@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include <time.h>
 #include <string.h>
-//#include <sys/wait.h>
+#include <sys/wait.h>
 /* header files */
 
 /* global definitions */
@@ -125,10 +125,12 @@ void batch(struct Queue* q){
     while (q->head != NULL) {
         current_proc = deQueue(q);
         start_time = time(NULL);
+		char path[20] = "";
+		strcat(path, "../work/");
+		strcat(path, current_proc->name);
         pid_t pid = fork();
         if (pid == 0) {
 			current_proc->pid = getpid();
-			char path[10] = strcat("../work/", current_proc->name);
             execl(path, current_proc->name, NULL);
         } else {
             wait(&current_proc->pid);
