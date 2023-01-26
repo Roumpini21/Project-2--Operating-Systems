@@ -129,13 +129,11 @@ void batch(struct Queue* q){
 		strcat(path, "../work/");
 		strcat(path, current_proc->name);
 		printf("%d", current_proc->pid);
-        if (fork() == 0) {
-			printf("HEYYYYY");
-			current_proc->pid = getpid();
-			int pid1 = getpid();
-			
+		int pid = fork();
+        if (pid == 0){
             execl(path, current_proc->name, NULL);
         } else {
+			current_proc->pid = pid;
             wait(NULL);
             end_time = time(NULL);
             double elapsed_time = difftime(end_time, start_time);
