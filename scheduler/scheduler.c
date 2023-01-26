@@ -128,10 +128,11 @@ void batch(struct Queue* q){
 		char path[20] = "";
 		strcat(path, "../work/");
 		strcat(path, current_proc->name);
+		printf("%s", path);
         pid_t pid = fork();
         if (pid == 0) {
 			current_proc->pid = getpid();
-            execl(path, path, NULL);
+            execl(path, current_proc->name, NULL);
         } else {
             wait(&current_proc->pid);
             end_time = time(NULL);
