@@ -126,11 +126,12 @@ void batch(struct Queue* q){
         start_time = time(NULL);
         pid_t pid = fork();
         if (pid == 0) {
-			current_proc->pid = pid;
-            execl(current_proc->name, current_proc->name, NULL);
+			current_proc->pid = getpid();
+			char path[10] = concat("../work/", current_proc->name);
+            execl(path, current_proc->name, NULL);
         } else {
             wait(NULL);
-            end_time = time(NULL);
+            end_time = time(&current_proc->pid);
             double elapsed_time = difftime(end_time, start_time);
             printf("Process %d took %f seconds to finish.\n", current_proc->pid, elapsed_time);
         }
