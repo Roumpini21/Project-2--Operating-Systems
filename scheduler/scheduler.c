@@ -141,7 +141,7 @@ void batch(struct Queue* q){
             printf("PID %d - CMD: %s \n\t\t Elapsed time: %.3f secs \n\t\t Workload Time: %.3f secs.\n", current_proc->pid, current_proc->name, elapsed_time, current_proc->WT);
         }
     }
-	printf("WORKLOAD TIME: %.3f seconds", current_proc->WT);
+	printf("WORKLOAD TIME: %.3f seconds\n", current_proc->WT);
 }
 
 int main(int argc,char **argv)
