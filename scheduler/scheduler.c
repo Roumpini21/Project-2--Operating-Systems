@@ -13,7 +13,7 @@ struct proc {
 	int pid;
 	int priority;
 	int at; //Arrival Time
-	int WT; //Waiting Time
+	float WT; //Waiting Time
 	struct proc* next;
     struct proc* prev;
 }typedef proc;
@@ -137,7 +137,9 @@ void batch(struct Queue* q){
             wait(NULL);
             clock_gettime(CLOCK_MONOTONIC, &end_time);
             double elapsed_time = (end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec) / 1000000000.0;
-            printf("Process %d took %f seconds to finish.\n", current_proc->pid, elapsed_time);
+			float temp_time = temp_time + elapsed_time;
+			current_proc->WT = temp_time;
+            printf("PID %d - CMD: %s \n\t\t Elapsed time: %f secs \n\t\t Workload Time: %f to finish.\n", current_proc->pid, current_proc->name, elapsed_time, current_proc->WT);
         }
     }
 }
