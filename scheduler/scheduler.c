@@ -3,7 +3,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <time.h>
-#include <sys/wait.h>
+//#include <sys/wait.h>
 /* header files */
 
 /* global definitions */
@@ -127,11 +127,11 @@ void batch(struct Queue* q){
         pid_t pid = fork();
         if (pid == 0) {
 			current_proc->pid = getpid();
-			char path[10] = concat("../work/", current_proc->name);
+			char path[10] = strcat("../work/", current_proc->name);
             execl(path, current_proc->name, NULL);
         } else {
-            wait(NULL);
-            end_time = time(&current_proc->pid);
+            wait(&current_proc->pid);
+            end_time = time(NULL);
             double elapsed_time = difftime(end_time, start_time);
             printf("Process %d took %f seconds to finish.\n", current_proc->pid, elapsed_time);
         }
