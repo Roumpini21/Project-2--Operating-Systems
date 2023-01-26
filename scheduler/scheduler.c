@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+#include <time.h>
 /* header files */
 
 /* global definitions */
@@ -18,7 +20,6 @@ struct Queue {
     struct proc* head;
     struct proc* end;
 }typedef queue;
-
 
 /* definition and implementation of process descriptor and queue(s) */
 void newProc(queue * q){
@@ -44,8 +45,6 @@ struct Queue* createQueue() {
 
 // Removes the head key from the queue
 struct proc* deQueue(struct Queue* q) {
-    if (q->head == NULL)
-        return NULL;
     struct proc* temp = q->head;
     if (q->head->next != NULL){
         q->head = q->head->next;
@@ -58,8 +57,41 @@ struct proc* deQueue(struct Queue* q) {
     return temp;
 }
 
-void fill_queue (queue* q, FILE* fp) {
+int count(struct Queue* q) {
+    struct proc* temp = q->head;
+    int count = 0;
+    while(temp != NULL) {
+        count++;
+        temp = temp->next;
+    }
+    return count;
+}
 
+void bubble(struct Queue* q){
+	int f;
+    struct proc* ptr1 = q->head;
+	proc* ptr2 = NULL;
+	while (f!=0){
+		f=0;
+		ptr1=q->head;
+		while (ptr1->next!=ptr2){
+			if(ptr1->at > ptr1->next->at){
+				int t = ptr1->at;
+				char text[10];
+				strcpy (text, ptr1->name);
+				ptr1->at = ptr1->next->at;
+				strcpy (ptr1->name, ptr1->next->name);
+				ptr1->next->at = t;
+				strcpy (ptr1->next->name, text);
+				f=1;
+			}
+			ptr1=ptr1->next;
+		}
+		ptr2=ptr1;
+	}
+}
+
+void fill_queue (queue* q, FILE* fp) {
 	int num;
 	char str[20];
 	while(fscanf(fp, "../work/ %s %d\n", str, &num)!=EOF){
@@ -67,6 +99,7 @@ void fill_queue (queue* q, FILE* fp) {
 		strcpy (q->end->name, str);
 		q->end->at = num;
 	}
+	bubble(q);
 }
 
 void print(struct Queue* q){
@@ -75,13 +108,33 @@ void print(struct Queue* q){
 		printf("%d\n", ptr->at);
 		ptr = ptr->next;
 	}
-
 }
+
 /* global variables and data structures */
 
 /* signal handler(s) */
 
 /* implementation of the scheduling policies, etc. batch(), rr() etc. */
+
+void batch(struct Queue* q){
+	int c = count(q);
+	double start_time, end_time;
+    struct proc* current_proc;
+    while (q->head != NULL) {
+        current_proc = deQueue(q);
+        start_time = time(NULL);
+        pid_t pid = fork();
+        if (pid == 0) {
+			current_proc->pid = pid;
+            execl(current_proc->name, current_proc->name, NULL);
+        } else {
+            wait(NULL);
+            end_time = time(NULL);
+            double elapsed_time = difftime(end_time, start_time);
+            printf("Process %s took %f seconds to finish.\n", current_proc->pid, elapsed_time);
+        }
+    }
+}
 
 int main(int argc,char **argv)
 {
@@ -95,10 +148,8 @@ int main(int argc,char **argv)
    	FILE * fp = fopen("homogeneous.txt", "r+");
 	fill_queue(queue1, fp);
 	print(queue1);
-	
-	
-	
-	
+	batch(queue1);
+
 	fclose(fp);
    
 
