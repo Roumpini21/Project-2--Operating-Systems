@@ -3,6 +3,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <time.h>
+#include <sys/wait.h>
 /* header files */
 
 /* global definitions */
@@ -68,7 +69,7 @@ int count(struct Queue* q) {
 }
 
 void bubble(struct Queue* q){
-	int f;
+	int f = 1;
     struct proc* ptr1 = q->head;
 	proc* ptr2 = NULL;
 	while (f!=0){
@@ -131,7 +132,7 @@ void batch(struct Queue* q){
             wait(NULL);
             end_time = time(NULL);
             double elapsed_time = difftime(end_time, start_time);
-            printf("Process %s took %f seconds to finish.\n", current_proc->pid, elapsed_time);
+            printf("Process %d took %f seconds to finish.\n", current_proc->pid, elapsed_time);
         }
     }
 }
