@@ -128,7 +128,6 @@ void batch(struct Queue* q){
 		char path[20] = "";
 		strcat(path, "../work/");
 		strcat(path, current_proc->name);
-		printf("%d", current_proc->pid);
 		int pid = fork();
         if (pid == 0){
             execl(path, current_proc->name, NULL);
@@ -139,7 +138,7 @@ void batch(struct Queue* q){
             double elapsed_time = (end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec) / 1000000000.0;
 			float temp_time = temp_time + elapsed_time;
 			current_proc->WT = temp_time;
-            printf("PID %d - CMD: %s \n\t\t Elapsed time: %f secs \n\t\t Workload Time: %f to finish.\n", current_proc->pid, current_proc->name, elapsed_time, current_proc->WT);
+            printf("PID %d - CMD: %s \n\t\t Elapsed time: %f secs \n\t\t Workload Time: %f secs.\n", current_proc->pid, current_proc->name, elapsed_time, current_proc->WT);
         }
     }
 }
