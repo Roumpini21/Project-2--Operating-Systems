@@ -107,7 +107,7 @@ void fill_queue (queue* q, FILE* fp) {
 void print(struct Queue* q){
 	struct proc* ptr = q->head;
 	while(ptr!=NULL){
-		printf("%s\n", ptr->name);
+		printf("%s\n", ptr->at);
 		ptr = ptr->next;
 	}
 }
@@ -138,9 +138,10 @@ void batch(struct Queue* q){
             double elapsed_time = (end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec) / 1000000000.0;
 			float temp_time = temp_time + elapsed_time;
 			current_proc->WT = temp_time;
-            printf("PID %d - CMD: %s \n\t\t Elapsed time: %f secs \n\t\t Workload Time: %f secs.\n", current_proc->pid, current_proc->name, elapsed_time, current_proc->WT);
+            printf("PID %d - CMD: %s \n\t\t Elapsed time: %.3f secs \n\t\t Workload Time: %.3f secs.\n", current_proc->pid, current_proc->name, elapsed_time, current_proc->WT);
         }
     }
+	printf("WORKLOAD TIME: %.3f seconds", current_proc->WT);
 }
 
 int main(int argc,char **argv)
@@ -154,7 +155,7 @@ int main(int argc,char **argv)
 
    	FILE * fp = fopen("homogeneous.txt", "r+");
 	fill_queue(queue1, fp);
-	print(queue1);
+	//print(queue1);
 	batch(queue1);
 
 	fclose(fp);
