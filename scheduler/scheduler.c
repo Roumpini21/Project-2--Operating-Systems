@@ -129,12 +129,12 @@ void batch(struct Queue* q){
 		strcat(path, "../work/");
 		strcat(path, current_proc->name);
 		printf("%s", path);
-        pid_t pid = fork();
+        int pid = fork();
 		printf("%d", pid);
         if (pid == 0) {
 			printf("HEYYYYY");
 			current_proc->pid = getpid();
-			pid_t pid1 = getpid();
+			int pid1 = getpid();
 			
             execl(path, current_proc->name, NULL);
         } else {
