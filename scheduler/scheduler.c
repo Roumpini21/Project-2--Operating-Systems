@@ -16,6 +16,7 @@ struct proc {
 	float WT; //Waiting Time
 	struct proc* next;
     struct proc* prev;
+	char state[10];
 }typedef proc;
 
 struct Queue {
@@ -126,14 +127,17 @@ void batch(struct Queue* q){
         current_proc = deQueue(q);
         clock_gettime(CLOCK_MONOTONIC, &start_time);
 		char path[20] = "";
+		strcpy(current_proc->state, "READY");
 		strcat(path, "../work/");
 		strcat(path, current_proc->name);
 		int pid = fork();
         if (pid == 0){
+			strcpy(current_proc->state, "RUNNING");
             execl(path, current_proc->name, NULL);
         } else {
 			current_proc->pid = pid;
             wait(NULL);
+			strcpy(current_proc->state, "EXITED");
             clock_gettime(CLOCK_MONOTONIC, &end_time);
             double elapsed_time = (end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec) / 1000000000.0;
 			float temp_time = temp_time + elapsed_time;
@@ -152,11 +156,26 @@ int main(int argc,char **argv)
 
 	/* read input file - populate queue */
 	struct Queue* queue1 = createQueue();
-
-   	FILE * fp = fopen("homogeneous.txt", "r+");
-	fill_queue(queue1, fp);
-	//print(queue1);
-	batch(queue1);
+	FILE * fp;
+	if (argv[3] != NULL){fp = fopen(argv[3], "r+");}
+	else {fp = fopen(argv[2], "r+");}
+	switch (argv[1]){
+	case "BATCH":
+		printf("Batch Algorithm Selected.");
+		fill_queue(queue1, fp);
+		//print(queue1);
+		batch(queue1);
+		break;
+	case "SJF":
+		printf("SJF Algorithm Selected.");
+		break;
+	case "RR":
+		printf("RR Algorithm Selected.");
+		break;
+	case "PRIO":
+		printf("PRIO Algorithm Selected.");
+		break;
+	}
 
 	fclose(fp);
    
