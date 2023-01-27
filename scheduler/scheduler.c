@@ -160,16 +160,16 @@ int main(int argc,char **argv)
 	if (argv[3] != NULL){fp = fopen(argv[3], "r+");}
 	else {fp = fopen(argv[2], "r+");}
 
-	if(strcmp(argv[1], "BATCH")){
+	if(!strcmp(argv[1], "BATCH")){
 		printf("Batch Algorithm Selected.");
 		fill_queue(queue1, fp);
 		//print(queue1);
 		batch(queue1);
-	}else if(strcmp(argv[1], "SJF")){
+	}else if(!strcmp(argv[1], "SJF")){
 		printf("SJF Algorithm Selected.");
-	}else if(strcmp(argv[1], "RR")){
+	}else if(!strcmp(argv[1], "RR")){
 		printf("RR Algorithm Selected.");
-	}else if(strcmp(argv[1], "PRIO")){
+	}else if(!strcmp(argv[1], "PRIO")){
 		printf("PRIO Algorithm Selected.");
 	}else{printf("Error Occured.");}
 
