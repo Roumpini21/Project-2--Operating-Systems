@@ -159,23 +159,19 @@ int main(int argc,char **argv)
 	FILE * fp;
 	if (argv[3] != NULL){fp = fopen(argv[3], "r+");}
 	else {fp = fopen(argv[2], "r+");}
-	switch (argv[1]){
-	case "BATCH":
+
+	if(strcmp(argv[1], "BATCH")){
 		printf("Batch Algorithm Selected.");
 		fill_queue(queue1, fp);
 		//print(queue1);
 		batch(queue1);
-		break;
-	case "SJF":
+	}else if(strcmp(argv[1], "SJF")){
 		printf("SJF Algorithm Selected.");
-		break;
-	case "RR":
+	}else if(strcmp(argv[1], "RR")){
 		printf("RR Algorithm Selected.");
-		break;
-	case "PRIO":
+	}else if(strcmp(argv[1], "PRIO")){
 		printf("PRIO Algorithm Selected.");
-		break;
-	}
+	}else{printf("Error Occured.");}
 
 	fclose(fp);
    
