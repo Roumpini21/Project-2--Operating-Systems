@@ -26,7 +26,7 @@ struct Queue {
     struct proc* end;
 }typedef queue;
 
-struct queue* glblqueue;
+struct Queue* glblqueue;
 
 /* definition and implementation of process descriptor and queue(s) */
 void newProc(queue * q){
