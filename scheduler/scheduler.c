@@ -178,7 +178,7 @@ void childHandler(int signum) {
 			break;
 		}else{ptr = ptr->next;}
 	}
-	strcpy(current_proc->state, "EXITED");
+	strcpy(ptr->state, "EXITED");
 }
 
 void batch_sjf(queue* q){
