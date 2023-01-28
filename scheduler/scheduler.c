@@ -210,7 +210,7 @@ void round_robin(queue *q, int quantum){
 	signal(SIGCHLD, childHandler);
 	struct proc* current_proc;
 	char path[20] = "";
-    while(q->head != NULL) {
+    while(q->head != NULL){
 		current_proc = deQueue(q);
 		process = current_proc;
 		strcpy(path, "../work/");
@@ -219,8 +219,9 @@ void round_robin(queue *q, int quantum){
 			kill(current_proc->pid, SIGCONT);
 			strcpy(current_proc->state, "RUNNING");
 			sleep(quantum);
+			printf("%s", current_proc->state);
 			if(!strcmp(current_proc->state, "EXITED")){
-				break;
+				continue;
 			}else{
 				kill(current_proc->pid, SIGSTOP);
 				strcpy(current_proc->state, "STOPPED");
