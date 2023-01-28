@@ -14,7 +14,8 @@ struct proc {
 	int pid;
 	int priority;
 	int at; //Arrival Time
-	float wt; //Waiting Time
+	int bt; //Burst Time
+	float wt; //Work Time
 	struct proc* next;
     struct proc* prev;
 	char state[10];
