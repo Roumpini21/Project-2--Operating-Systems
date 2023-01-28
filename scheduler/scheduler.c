@@ -61,7 +61,7 @@ struct proc* deQueue(struct Queue* q) {
     return temp;
 }
 
-void enqueue(struct queue *q, struct proc proc) {
+void enqueue(queue *q, proc *proc) {
     struct proc *temp = (struct proc *) malloc(sizeof(struct proc));
     temp = proc;
     temp->next = NULL;
@@ -74,7 +74,7 @@ void enqueue(struct queue *q, struct proc proc) {
     q->end = temp;
 }
 
-void bubble_batch(struct Queue* q){
+void bubble_batch(queue* q){
 	int f = 1;
     struct proc* ptr1 = q->head;
 	proc* ptr2 = NULL;
@@ -98,7 +98,7 @@ void bubble_batch(struct Queue* q){
 	}
 }
 
-void bubble_sjf(struct Queue* q){
+void bubble_sjf(queue* q){
 	int f = 1;
     struct proc* ptr1 = q->head;
 	proc* ptr2 = NULL;
@@ -156,7 +156,7 @@ void fill_queue (queue* q, FILE* fp, int option) {
 	}
 }
 
-void print(struct Queue* q){
+void print(queue* q){
 	struct proc* ptr = q->head;
 	while(ptr!=NULL){
 		printf("%d\n", ptr->bt);
@@ -176,7 +176,7 @@ void continueHandler(int signum) {
     printf("Process %d continued\n", getpid());
 }
 
-void batch_sjf(struct Queue* q){
+void batch_sjf(queue* q){
 	struct timespec start_time, end_time;
 	float temp_time = 0;
     struct proc* current_proc;
@@ -204,7 +204,7 @@ void batch_sjf(struct Queue* q){
 	printf("WORKLOAD TIME: %.3f seconds\n", current_proc->wt);
 }
 
-void round_robin(struct queue *q, int quantum) {
+void round_robin(queue *q, int quantum) {
     int total_time = 0;
 	int status;
 	struct proc* current_proc;
