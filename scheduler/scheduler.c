@@ -61,7 +61,7 @@ struct proc* deQueue(struct Queue* q) {
     return temp;
 }
 
-void enqueue(struct queue *q, struct process proc) {
+void enqueue(struct queue *q, struct proc proc) {
     struct proc *temp = (struct proc *) malloc(sizeof(struct proc));
     temp = proc;
     temp->next = NULL;
@@ -163,8 +163,6 @@ void print(struct Queue* q){
 		ptr = ptr->next;
 	}
 }
-
-/* global variables and data structures */
 
 /* signal handler(s) */
 
