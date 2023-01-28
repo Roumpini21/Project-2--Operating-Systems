@@ -160,7 +160,7 @@ void fill_queue (queue* q, FILE* fp, int option) {
 void print(queue* q){
 	struct proc* ptr = q->head;
 	while(ptr!=NULL){
-		printf("%d\n", ptr->bt);
+		printf("%d\n", ptr->pid);
 		ptr = ptr->next;
 	}
 }
@@ -211,12 +211,9 @@ void round_robin(queue *q, int quantum){
 			strcpy(current_proc->state, "RUNNING");
 			sleep(quantum);
 			kill(current_proc->pid, SIGSTOP);
-			if(WIFEXITED(status)) {
-				strcpy(current_proc->state, "EXITED");
-			}else {
-				strcpy(current_proc->state, "STOPPED");
-				enqueue(q, current_proc);
-			}
+			strcpy(current_proc->state, "STOPPED");
+			enqueue(q, current_proc);
+			print(q);
 		}else{
 			int pid = fork();
 			if(pid == 0){
@@ -233,6 +230,7 @@ void round_robin(queue *q, int quantum){
 					enqueue(q, current_proc);
 				}
 			}
+		print(q);
 		}
 	}
 }
