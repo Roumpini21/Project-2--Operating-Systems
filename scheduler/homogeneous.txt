@@ -1,5 +1,5 @@
 ../work/work7	7
-../work/work7	6
 ../work/work7	7
-../work/work7	5
-../work/work6	3
+../work/work7	7
+../work/work7	7
+../work/work7	7
