@@ -216,19 +216,20 @@ void round_robin(queue *q, int quantum){
 			}else{
 				strcpy(current_proc->state, "RUNNING");
 				current_proc->pid = pid;
-				sleep(quantum);
-				kill(current_proc->pid, SIGSTOP);
-				waitpid(current_proc->pid, &status, WUNTRACED);
-				if(WIFEXITED(status)) {
-					strcpy(current_proc->state, "EXITED");
-				} else if(WIFSTOPPED(status)) {
-					strcpy(current_proc->state, "STOPPED");
-					enqueue(q, current_proc);
-				}
 			}
+		}
+		sleep(quantum);
+		kill(current_proc->pid, SIGSTOP);
+		waitpid(current_proc->pid, &status, WUNTRACED);
+		if(WIFEXITED(status)) {
+			strcpy(current_proc->state, "EXITED");
+		} else if(WIFSTOPPED(status)) {
+			strcpy(current_proc->state, "STOPPED");
+			enqueue(q, current_proc);
 		}
 	}
 }
+
 
 int main(int argc, char **argv){
 	signal(SIGCHLD, childHandler);
