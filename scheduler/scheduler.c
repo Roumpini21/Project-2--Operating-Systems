@@ -13,7 +13,7 @@ struct proc {
 	int pid;
 	int priority;
 	int at; //Arrival Time
-	float wt; //Waiting Time
+	float wt = 0; //Waiting Time
 	int bt;
 	struct proc* next;
     struct proc* prev;
