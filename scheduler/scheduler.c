@@ -235,6 +235,7 @@ void round_robin(queue *q, int quantum) {
 					strcpy(current_proc->state, "STOPPED");
 					enqueue(q, current_proc);
 				}
+				printf("%s", current_proc->state);
 			}
 		}
 		print(q);
