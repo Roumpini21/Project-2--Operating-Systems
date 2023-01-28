@@ -208,11 +208,8 @@ void batch_sjf(queue* q){
 void round_robin(queue *q, int quantum) {
     int total_time = 0;
 	int status;
-	struct timespec tim, tim2;
 	struct proc* current_proc;
 	char path[20] = "";
-	tim.tv_sec = 1;
-	tim.tv_nsec = 0;
     while(q->head != NULL) {
 		current_proc = deQueue(q);
 		strcpy(path, "../work/");
@@ -227,7 +224,7 @@ void round_robin(queue *q, int quantum) {
 				execl(path, current_proc->name, NULL);
 			}else{
 				current_proc->pid = pid;
-				nanosleep(&tim, &tim2);
+				sleep(quantum);
 				kill(current_proc->pid, SIGSTOP);
 				printf("1\n");
 				if(wait(&status) > 0){
@@ -275,7 +272,7 @@ int main(int argc, char **argv)
 		option = 3;
 		printf("RR Algorithm Selected.\n");
 		fill_queue(queue1, fp, 3);
-		round_robin(queue1, atoi(argv[2]));
+		round_robin(queue1, (atoi(argv[2])*1000));
 	}else if(!strcmp(argv[1], "PRIO")){
 		printf("PRIO Algorithm Selected.\n");
 	}else{printf("Error Occured.");}
