@@ -224,7 +224,7 @@ void round_robin(queue *q, int quantum) {
 				execl(path, current_proc->name, NULL);
 			}else{
 				current_proc->pid = pid;
-				sleep(quantum);
+				nanosleep(quantum);
 				kill(current_proc->pid, SIGSTOP);
 				printf("1\n");
 				if(wait(&status) > 0){
