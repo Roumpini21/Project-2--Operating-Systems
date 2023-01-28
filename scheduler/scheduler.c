@@ -209,11 +209,14 @@ void round_robin(queue *q, int quantum){
 		if(!strcmp(current_proc->state, "STOPPED")){
 			printf("1");
 			kill(current_proc->pid, SIGCONT);
+			printf("2");
 			sleep(quantum);
+			printf("3");
 			kill(current_proc->pid, SIGSTOP);
+			printf("4");
 			if(WIFEXITED(status)) {
 				strcpy(current_proc->state, "EXITED");
-			} else if(WIFSTOPPED(status)) {
+			}else {
 				strcpy(current_proc->state, "STOPPED");
 				enqueue(q, current_proc);
 			}
@@ -228,7 +231,7 @@ void round_robin(queue *q, int quantum){
 				kill(current_proc->pid, SIGSTOP);
 				if(WIFEXITED(status)) {
 					strcpy(current_proc->state, "EXITED");
-				}else {
+				}else{
 					strcpy(current_proc->state, "STOPPED");
 					enqueue(q, current_proc);
 				}
