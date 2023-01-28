@@ -216,6 +216,7 @@ void round_robin(queue *q, int quantum){
 			}else{
 				strcpy(current_proc->state, "RUNNING");
 				current_proc->pid = pid;
+				sleep(quantum);
 				kill(current_proc->pid, SIGSTOP);
 				waitpid(current_proc->pid, &status, WUNTRACED);
 				if(WIFEXITED(status)) {
