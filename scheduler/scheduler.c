@@ -196,9 +196,10 @@ void batch_sjf(queue* q){
     }
 	printf("WORKLOAD TIME: %.3f seconds\n", current_proc->wt);
 }
-void rr_par(queue *q, proc* procedure, int quant){
+void rr_par(queue *q, proc* procedure, int quant, int p){
+	int status;
 	strcpy(procedure->state, "RUNNING");
-	procedure->pid = pid;
+	procedure->pid = p;
 	sleep(quant);
 	kill(procedure->pid, SIGSTOP);
 	printf("1\n");
@@ -214,7 +215,6 @@ void rr_par(queue *q, proc* procedure, int quant){
 
 void round_robin(queue *q, int quantum){
     int total_time = 0;
-	int status;
 	struct proc* current_proc;
 	char path[20] = "";
     while(q->head != NULL) {
@@ -230,7 +230,7 @@ void round_robin(queue *q, int quantum){
 			if(pid == 0){
 				execl(path, current_proc->name, NULL);
 			}else{
-				rr_par(q, current_proc, quantum);
+				rr_par(q, current_proc, quantum, pid);
 			}
 		}
 	}
