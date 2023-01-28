@@ -150,10 +150,10 @@ void print(struct Queue* q){
 
 void batch_sjf(struct Queue* q){
 	struct timespec start_time, end_time;
+	float temp_time = 0;
     struct proc* current_proc;
     while (q->head != NULL) {
         current_proc = deQueue(q);
-		current_proc->wt = 0;
         clock_gettime(CLOCK_MONOTONIC, &start_time);
 		char path[20] = "";
 		strcpy(current_proc->state, "READY");
