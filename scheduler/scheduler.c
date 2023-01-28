@@ -170,7 +170,7 @@ void print(queue* q){
 /* signal handler(s) */
 
 void childHandler(int signum) {
-	proc* ptr = q->head;
+	proc* ptr = glblqueue->head;
 	int status;
     pid_t pid = wait(&status);
 	while(1){
@@ -178,7 +178,7 @@ void childHandler(int signum) {
 			break;
 		}else{ptr = ptr->next;}
 	}
-	strcpy(current_proc->state, "EXITED");
+	strcpy(ptr->state, "EXITED");
 }
 
 void batch_sjf(queue* q){
@@ -255,7 +255,7 @@ int main(int argc, char **argv){
 	struct Queue* queue1 = createQueue();
 	FILE * fp;
 	int option = 0;
-	glblqueue = queue1;
+	glblqueue = &queue1;
 	/* parse input arguments (policy, quantum (if required), input filename */
 	if (argv[3] != NULL){fp = fopen(argv[3], "r+");}
 	else {fp = fopen(argv[2], "r+");}
