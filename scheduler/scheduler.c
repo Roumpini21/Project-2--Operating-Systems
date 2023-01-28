@@ -207,13 +207,10 @@ void round_robin(queue *q, int quantum){
 		strcpy(path, "../work/");
 		strcat(path, current_proc->name);
 		if(!strcmp(current_proc->state, "STOPPED")){
-			printf("1");
 			kill(current_proc->pid, SIGCONT);
-			printf("2");
+			strcpy(current_proc->state, "RUNNING");
 			sleep(quantum);
-			printf("3");
 			kill(current_proc->pid, SIGSTOP);
-			printf("4");
 			if(WIFEXITED(status)) {
 				strcpy(current_proc->state, "EXITED");
 			}else {
