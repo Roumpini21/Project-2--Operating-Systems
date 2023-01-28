@@ -170,15 +170,15 @@ void print(queue* q){
 /* signal handler(s) */
 
 void childHandler(int signum, siginfo_t* info, void* ptr) {
-	proc* ptr = glblqueue->head;
+	proc* ptr1 = glblqueue->head;
 	int status;
     pid_t pid = wait(&status);
 	while(1){
-		if (pid == ptr->pid){
+		if (pid == ptr1->pid){
 			break;
-		}else{ptr = ptr->next;}
+		}else{ptr1 = ptr1->next;}
 	}
-	strcpy(ptr->state, "EXITED");
+	strcpy(ptr1->state, "EXITED");
 }
 
 void batch_sjf(queue* q){
