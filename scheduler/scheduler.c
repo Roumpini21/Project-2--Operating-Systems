@@ -168,8 +168,14 @@ void print(queue* q){
 /* signal handler(s) */
 
 void childHandler(int signum) {
+	proc* ptr = q->head;
 	int status;
     pid_t pid = wait(&status);
+	while(1){
+		if (pid = ptr->pid){
+			break;
+		}else{ptr = ptr->next;}
+	}
 	strcpy(current_proc->state, "EXITED");
 }
 
