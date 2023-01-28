@@ -208,8 +208,11 @@ void batch_sjf(queue* q){
 void round_robin(queue *q, int quantum) {
     int total_time = 0;
 	int status;
+	struct timespec tim, tim2;
 	struct proc* current_proc;
 	char path[20] = "";
+	tim.tv_sec = 1;
+	tim.tv_nsec = 0;
     while(q->head != NULL) {
 		current_proc = deQueue(q);
 		strcpy(path, "../work/");
@@ -224,7 +227,7 @@ void round_robin(queue *q, int quantum) {
 				execl(path, current_proc->name, NULL);
 			}else{
 				current_proc->pid = pid;
-				nanosleep(quantum);
+				nanosleep(&tim, &tim2);
 				kill(current_proc->pid, SIGSTOP);
 				printf("1\n");
 				if(wait(&status) > 0){
