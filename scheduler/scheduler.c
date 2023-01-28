@@ -5,6 +5,7 @@
 #include <time.h>
 #include <string.h>
 #include <sys/wait.h>
+#include <signal.h>
 /* header files */
 
 /* global definitions */
@@ -14,7 +15,6 @@ struct proc {
 	int priority;
 	int at; //Arrival Time
 	float wt; //Waiting Time
-	int bt;
 	struct proc* next;
     struct proc* prev;
 	char state[10];
@@ -61,6 +61,19 @@ struct proc* deQueue(struct Queue* q) {
     return temp;
 }
 
+void enqueue(struct queue *q, struct process proc) {
+    struct proc *temp = (struct proc *) malloc(sizeof(struct proc));
+    temp = proc;
+    temp->next = NULL;
+    temp->prev = q->end;
+    if(q->end == NULL) {
+        q->head = q->end = temp;
+        return;
+    }
+    q->end->next = temp;
+    q->end = temp;
+}
+
 void bubble_batch(struct Queue* q){
 	int f = 1;
     struct proc* ptr1 = q->head;
@@ -98,6 +111,7 @@ void bubble_sjf(struct Queue* q){
 				char text[10];
 				strcpy (text, ptr1->name);
 				ptr1->bt = ptr1->next->bt;
+				strcpy(ptr1->state, ptr1->next->state);
 				strcpy (ptr1->name, ptr1->next->name);
 				ptr1->next->bt = t;
 				strcpy (ptr1->next->name, text);
@@ -118,6 +132,7 @@ void fill_queue (queue* q, FILE* fp, int option) {
 				newProc(q);
 				strcpy (q->end->name, str);
 				q->end->at = num;
+				strcpy(q->end->state, "READY");
 			}
 			bubble_batch(q);
 			break;
@@ -126,12 +141,19 @@ void fill_queue (queue* q, FILE* fp, int option) {
 				newProc(q);
 				strcpy (q->end->name, str);
 				q->end->bt = num;
+				strcpy(q->end->state, "READY");
 			}
 			bubble_sjf(q);
 			break;
+		case 3:
+			while(fscanf(fp, "../work/ %s %d\n", str, &num)!=EOF){
+				newProc(q);
+				strcpy (q->end->name, str);
+				q->end->priority = num;
+				strcpy(q->end->state, "READY");
+			}
+			break;
 	}
-		
-	
 }
 
 void print(struct Queue* q){
@@ -146,24 +168,31 @@ void print(struct Queue* q){
 
 /* signal handler(s) */
 
-/* implementation of the scheduling policies, etc. batch(), rr() etc. */
+void childHandler(int signum) {}
+
+void pauseHandler(int signum) {
+    printf("Process %d paused\n", getpid());
+}
+
+void continueHandler(int signum) {
+    printf("Process %d continued\n", getpid());
+}
 
 void batch_sjf(struct Queue* q){
 	struct timespec start_time, end_time;
 	float temp_time = 0;
     struct proc* current_proc;
-    while (q->head != NULL) {
+    while (q->head != NULL){
         current_proc = deQueue(q);
         clock_gettime(CLOCK_MONOTONIC, &start_time);
 		char path[20] = "";
-		strcpy(current_proc->state, "READY");
 		strcat(path, "../work/");
 		strcat(path, current_proc->name);
 		int pid = fork();
         if (pid == 0){
 			strcpy(current_proc->state, "RUNNING");
             execl(path, current_proc->name, NULL);
-        } else {
+        }else{
 			current_proc->pid = pid;
             wait(NULL);
 			strcpy(current_proc->state, "EXITED");
@@ -177,8 +206,45 @@ void batch_sjf(struct Queue* q){
 	printf("WORKLOAD TIME: %.3f seconds\n", current_proc->wt);
 }
 
-int main(int argc,char **argv)
+void round_robin(struct queue *q, int quantum) {
+    int total_time = 0;
+	int status;
+	struct proc* current_proc;
+	char path[20] = "";
+    while(q->head != NULL) {
+		current_proc = dequeue(q);
+		strcpy(path, "../work/");
+		strcat(path, current_proc->name);
+		if(!strcmp(current_proc->state, "STOPPED")){
+			kill(current_proc->pid, SIGCONT);
+		}
+		else{
+			int pid = fork();
+			if(pid == 0){
+				strcpy(current_proc->state, "RUNNING");
+				execl(path, current_proc->name, NULL);
+			}else{
+				current_proc->pid = pid;
+				sleep(quantum);
+				kill(current_proc->pid, SIGSTOP);
+				if(wait(&status) > 0){
+					if(WIFEXITED(status)){
+						strcpy(current_proc->state, "EXITED");
+					}
+				}else{
+					strcpy(current_proc->state, "STOPPED");
+					enqueue(q, current_proc);
+				}
+			}
+		}
+	}
+}
+
+int main(int argc, char **argv)
 {
+	signal(SIGCHLD, childHandler);
+	signal(SIGCONT, continueHandler);
+	signal(SIGSTOP, pauseHandler);
 	/* local variables */
 	struct Queue* queue1 = createQueue();
 	FILE * fp;
@@ -201,9 +267,11 @@ int main(int argc,char **argv)
 		//print(queue1);
 		batch_sjf(queue1);
 	}else if(!strcmp(argv[1], "RR")){
+		int quantum;
 		option = 3;
 		printf("RR Algorithm Selected.\n");
 		fill_queue(queue1, fp, 3);
+		round_robin(queue1, atoi(argv[2]));
 	}else if(!strcmp(argv[1], "PRIO")){
 		printf("PRIO Algorithm Selected.\n");
 	}else{printf("Error Occured.");}
