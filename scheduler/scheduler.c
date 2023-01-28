@@ -173,7 +173,7 @@ void print(queue* q){
 void childHandler(int signum) {
 	int status;
 	waitpid(process->pid, &process->status, WNOHANG);
-	if(process->status == 0){
+	if(WIFEXITED(process->status)){
 		strcpy(process->state, "EXITED");
 	}
 }
