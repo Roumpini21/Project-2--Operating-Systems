@@ -173,6 +173,7 @@ void print(queue* q){
 void childHandler(int signum) {
 	int status;
 	waitpid(process->pid, &process->status, WNOHANG);
+	printf("A child Exited");
 }
 
 void batch_sjf(queue* q){
