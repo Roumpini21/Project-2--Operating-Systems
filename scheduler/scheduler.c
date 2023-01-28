@@ -220,9 +220,9 @@ void round_robin(queue *q, int quantum) {
 		else{
 			int pid = fork();
 			if(pid == 0){
-				strcpy(current_proc->state, "RUNNING");
 				execl(path, current_proc->name, NULL);
 			}else{
+				strcpy(current_proc->state, "RUNNING");
 				current_proc->pid = pid;
 				sleep(quantum);
 				kill(current_proc->pid, SIGSTOP);
@@ -272,7 +272,7 @@ int main(int argc, char **argv)
 		option = 3;
 		printf("RR Algorithm Selected.\n");
 		fill_queue(queue1, fp, 3);
-		round_robin(queue1, (atoi(argv[2])*1000));
+		round_robin(queue1, (atoi(argv[2])/1000));
 	}else if(!strcmp(argv[1], "PRIO")){
 		printf("PRIO Algorithm Selected.\n");
 	}else{printf("Error Occured.");}
