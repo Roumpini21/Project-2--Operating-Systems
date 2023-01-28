@@ -203,6 +203,7 @@ void batch_sjf(queue* q){
 void round_robin(queue *q, int quantum){
     int total_time = 0;
 	int status;
+	signal(SIGCHLD, childHandler);
 	struct proc* current_proc;
 	char path[20] = "";
     while(q->head != NULL) {
@@ -237,7 +238,6 @@ void round_robin(queue *q, int quantum){
 }
 
 int main(int argc, char **argv){
-	signal(SIGCHLD, childHandler);
 	/* local variables */
 	struct Queue* queue1 = createQueue();
 	FILE * fp;
