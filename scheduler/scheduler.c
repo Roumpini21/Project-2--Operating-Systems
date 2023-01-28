@@ -26,7 +26,7 @@ struct Queue {
     struct proc* end;
 }typedef queue;
 
-struct Queue* glblqueue;
+struct queue* glblqueue;
 
 /* definition and implementation of process descriptor and queue(s) */
 void newProc(queue * q){
@@ -169,16 +169,16 @@ void print(queue* q){
 
 /* signal handler(s) */
 
-void childHandler(int signum, siginfo_t* info, void* ptr) {
-	proc* ptr1 = glblqueue->head;
+void childHandler(int signum) {
+	proc* ptr = q->head;
 	int status;
     pid_t pid = wait(&status);
 	while(1){
-		if (pid == ptr1->pid){
+		if (pid == ptr->pid){
 			break;
-		}else{ptr1 = ptr1->next;}
+		}else{ptr = ptr->next;}
 	}
-	strcpy(ptr1->state, "EXITED");
+	strcpy(current_proc->state, "EXITED");
 }
 
 void batch_sjf(queue* q){
@@ -247,9 +247,9 @@ void round_robin(queue *q, int quantum){
 
 int main(int argc, char **argv){
 	struct sigaction sa;
-	sa.sa_sigaction = childHandler;
+	sa.sa_handler = childHandler;
     sigemptyset(&sa.sa_mask);
-    sa.sa_flags = SA_SIGINFO;
+    sa.sa_flags = SA_RESTART;
     sigaction(SIGCHLD, &sa, NULL);
 	/* local variables */
 	struct Queue* queue1 = createQueue();
