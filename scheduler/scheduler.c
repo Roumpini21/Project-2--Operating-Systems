@@ -169,14 +169,6 @@ void print(queue* q){
 
 void childHandler(int signum) {}
 
-void pauseHandler(int signum) {
-    printf("Process %d paused\n", getpid());
-}
-
-void continueHandler(int signum) {
-    printf("Process %d continued\n", getpid());
-}
-
 void batch_sjf(queue* q){
 	struct timespec start_time, end_time;
 	float temp_time = 0;
@@ -243,8 +235,6 @@ void round_robin(queue *q, int quantum) {
 int main(int argc, char **argv)
 {
 	signal(SIGCHLD, childHandler);
-	signal(SIGCONT, continueHandler);
-	signal(SIGSTOP, pauseHandler);
 	/* local variables */
 	struct Queue* queue1 = createQueue();
 	FILE * fp;
