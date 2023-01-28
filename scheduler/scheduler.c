@@ -13,7 +13,8 @@ struct proc {
 	int pid;
 	int priority;
 	int at; //Arrival Time
-	float WT; //Waiting Time
+	float wt; //Waiting Time
+	int bt;
 	struct proc* next;
     struct proc* prev;
 	char state[10];
@@ -70,7 +71,7 @@ int count(struct Queue* q) {
     return count;
 }
 
-void bubble(struct Queue* q){
+void bubble_batch(struct Queue* q){
 	int f = 1;
     struct proc* ptr1 = q->head;
 	proc* ptr2 = NULL;
@@ -94,15 +95,53 @@ void bubble(struct Queue* q){
 	}
 }
 
-void fill_queue (queue* q, FILE* fp) {
+void bubble_sjf(struct Queue* q){
+	int f = 1;
+    struct proc* ptr1 = q->head;
+	proc* ptr2 = NULL;
+	while (f!=0){
+		f=0;
+		ptr1=q->head;
+		while (ptr1->next!=ptr2){
+			if(ptr1->bt > ptr1->next->bt){
+				int t = ptr1->bt;
+				char text[10];
+				strcpy (text, ptr1->name);
+				ptr1->bt = ptr1->next->bt;
+				strcpy (ptr1->name, ptr1->next->name);
+				ptr1->next->bt = t;
+				strcpy (ptr1->next->name, text);
+				f=1;
+			}
+			ptr1=ptr1->next;
+		}
+		ptr2=ptr1;
+	}
+}
+
+void fill_queue (queue* q, FILE* fp, int option) {
 	int num;
 	char str[20];
-	while(fscanf(fp, "../work/ %s %d\n", str, &num)!=EOF){
-		newProc(q);
-		strcpy (q->end->name, str);
-		q->end->at = num;
+	switch(option){
+		case 1:
+			while(fscanf(fp, "../work/ %s %d\n", str, &num)!=EOF){
+				newProc(q);
+				strcpy (q->end->name, str);
+				q->end->at = num;
+			}
+			bubble_batch(q);
+			break;
+		case 2:
+			while(fscanf(fp, "../work/ %s %d\n", str, &num)!=EOF){
+				newProc(q);
+				strcpy (q->end->name, str);
+				q->end->bt = num;
+			}
+			bubble_sjf(q);
+			break;
 	}
-	bubble(q);
+		
+	
 }
 
 void print(struct Queue* q){
@@ -141,45 +180,44 @@ void batch(struct Queue* q){
             clock_gettime(CLOCK_MONOTONIC, &end_time);
             double elapsed_time = (end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec) / 1000000000.0;
 			float temp_time = temp_time + elapsed_time;
-			current_proc->WT = temp_time;
-            printf("PID %d - CMD: %s \n\t\t Elapsed time: %.3f secs \n\t\t Workload Time: %.3f secs.\n", current_proc->pid, current_proc->name, elapsed_time, current_proc->WT);
+			current_proc->wt = temp_time;
+            printf("PID %d - CMD: %s \n\t\t Elapsed time: %.3f secs \n\t\t Workload Time: %.3f secs.\n", current_proc->pid, current_proc->name, elapsed_time, current_proc->wt);
         }
     }
-	printf("WORKLOAD TIME: %.3f seconds\n", current_proc->WT);
+	printf("WORKLOAD TIME: %.3f seconds\n", current_proc->wt);
 }
 
 int main(int argc,char **argv)
 {
 	/* local variables */
-
-	/* parse input arguments (policy, quantum (if required), input filename */
-
-	/* read input file - populate queue */
 	struct Queue* queue1 = createQueue();
 	FILE * fp;
+	int option = 0;
+	/* parse input arguments (policy, quantum (if required), input filename */
 	if (argv[3] != NULL){fp = fopen(argv[3], "r+");}
 	else {fp = fopen(argv[2], "r+");}
-
+	/* read input file - populate queue */
+	
 	if(!strcmp(argv[1], "BATCH")){
+		option = 1;
 		printf("Batch Algorithm Selected.");
-		fill_queue(queue1, fp);
+		fill_queue(queue1, fp, 1);
 		//print(queue1);
 		batch(queue1);
 	}else if(!strcmp(argv[1], "SJF")){
+		option = 2;
 		printf("SJF Algorithm Selected.");
+		fill_queue(queue1, fp, 2);
+		print(queue1);
 	}else if(!strcmp(argv[1], "RR")){
+		option = 3;
 		printf("RR Algorithm Selected.");
+		fill_queue(queue1, fp, 3);
 	}else if(!strcmp(argv[1], "PRIO")){
 		printf("PRIO Algorithm Selected.");
 	}else{printf("Error Occured.");}
 
 	fclose(fp);
-   
-
-	/* call selected scheduling policy */
-
-	/* print information and statistics */
-
 	printf("Scheduler exits\n");
 	return 0;
 }
