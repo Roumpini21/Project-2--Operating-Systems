@@ -237,11 +237,7 @@ void round_robin(queue *q, int quantum){
 }
 
 int main(int argc, char **argv){
-	struct sigaction sa;
-	sa.sa_handler = childHandler;
-    sigemptyset(&sa.sa_mask);
-    sa.sa_flags = SA_RESTART;
-    sigaction(SIGCHLD, &sa, NULL);
+	signal(SIGCHLD, childHandler);
 	/* local variables */
 	struct Queue* queue1 = createQueue();
 	FILE * fp;
