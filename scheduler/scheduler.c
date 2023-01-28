@@ -220,9 +220,9 @@ void round_robin(queue *q, int quantum){
 		}
 		sleep(quantum);
 		kill(current_proc->pid, SIGSTOP);
-		if(WIFEXITED(status)) {
+		if(WIFEXITED(status)){
 			strcpy(current_proc->state, "EXITED");
-		} else if(WIFSTOPPED(status)) {
+		}else{
 			strcpy(current_proc->state, "STOPPED");
 			enqueue(q, current_proc);
 		}
