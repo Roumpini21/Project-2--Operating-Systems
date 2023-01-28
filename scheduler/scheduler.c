@@ -223,7 +223,7 @@ void round_robin(queue *q, int quantum){
 		strcat(path, current_proc->name);
 		if(!strcmp(current_proc->state, "STOPPED")){
 			kill(current_proc->pid, SIGCONT);
-			rr_par(q, current_proc, quantum);
+			rr_par(q, current_proc, quantum, pid);
 		}
 		else{
 			int pid = fork();
