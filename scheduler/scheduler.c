@@ -200,21 +200,21 @@ int main(int argc,char **argv)
 	
 	if(!strcmp(argv[1], "BATCH")){
 		option = 1;
-		printf("Batch Algorithm Selected.");
+		printf("Batch Algorithm Selected.\n");
 		fill_queue(queue1, fp, 1);
 		//print(queue1);
 		batch(queue1);
 	}else if(!strcmp(argv[1], "SJF")){
 		option = 2;
-		printf("SJF Algorithm Selected.");
+		printf("SJF Algorithm Selected.\n");
 		fill_queue(queue1, fp, 2);
 		print(queue1);
 	}else if(!strcmp(argv[1], "RR")){
 		option = 3;
-		printf("RR Algorithm Selected.");
+		printf("RR Algorithm Selected.\n");
 		fill_queue(queue1, fp, 3);
 	}else if(!strcmp(argv[1], "PRIO")){
-		printf("PRIO Algorithm Selected.");
+		printf("PRIO Algorithm Selected.\n");
 	}else{printf("Error Occured.");}
 
 	fclose(fp);
