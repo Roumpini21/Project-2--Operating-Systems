@@ -61,16 +61,6 @@ struct proc* deQueue(struct Queue* q) {
     return temp;
 }
 
-int count(struct Queue* q) {
-    struct proc* temp = q->head;
-    int count = 0;
-    while(temp != NULL) {
-        count++;
-        temp = temp->next;
-    }
-    return count;
-}
-
 void bubble_batch(struct Queue* q){
 	int f = 1;
     struct proc* ptr1 = q->head;
@@ -158,8 +148,7 @@ void print(struct Queue* q){
 
 /* implementation of the scheduling policies, etc. batch(), rr() etc. */
 
-void batch(struct Queue* q){
-	int c = count(q);
+void batch_sjf(struct Queue* q){
 	struct timespec start_time, end_time;
     struct proc* current_proc;
     while (q->head != NULL) {
@@ -203,12 +192,13 @@ int main(int argc,char **argv)
 		printf("Batch Algorithm Selected.\n");
 		fill_queue(queue1, fp, 1);
 		//print(queue1);
-		batch(queue1);
+		batch_sjf(queue1);
 	}else if(!strcmp(argv[1], "SJF")){
 		option = 2;
 		printf("SJF Algorithm Selected.\n");
 		fill_queue(queue1, fp, 2);
-		print(queue1);
+		//print(queue1);
+		batch_sjf(queue1);
 	}else if(!strcmp(argv[1], "RR")){
 		option = 3;
 		printf("RR Algorithm Selected.\n");
