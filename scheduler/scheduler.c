@@ -26,6 +26,8 @@ struct Queue {
     struct proc* end;
 }typedef queue;
 
+struct queue* glblqueue;
+
 /* definition and implementation of process descriptor and queue(s) */
 void newProc(queue * q){
 	proc* temp = (struct proc*)malloc(sizeof(struct proc));
@@ -168,11 +170,11 @@ void print(queue* q){
 /* signal handler(s) */
 
 void childHandler(int signum) {
-	proc* ptr = q->head;
+	proc* ptr = glblqueue->head;
 	int status;
     pid_t pid = wait(&status);
 	while(1){
-		if (pid = ptr->pid){
+		if (pid == ptr->pid){
 			break;
 		}else{ptr = ptr->next;}
 	}
@@ -249,11 +251,11 @@ int main(int argc, char **argv){
     sigemptyset(&sa.sa_mask);
     sa.sa_flags = SA_RESTART;
     sigaction(SIGCHLD, &sa, NULL);
-
 	/* local variables */
 	struct Queue* queue1 = createQueue();
 	FILE * fp;
 	int option = 0;
+	glblqueue = queue1;
 	/* parse input arguments (policy, quantum (if required), input filename */
 	if (argv[3] != NULL){fp = fopen(argv[3], "r+");}
 	else {fp = fopen(argv[2], "r+");}
