@@ -225,7 +225,7 @@ void round_robin(queue *q, int quantum) {
 			}else{
 				current_proc->pid = pid;
 				sleep(quantum);
-				printf("1\n")
+				printf("1\n");
 				kill(current_proc->pid, SIGSTOP);
 				if(wait(&status) > 0){
 					if(WIFEXITED(status)){
