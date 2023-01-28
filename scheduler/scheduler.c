@@ -171,8 +171,6 @@ void childHandler(int signum) {}
 
 void pauseHandler(int signum) {
     printf("Process %d paused\n", getpid());
-	strcpy(current_proc->state, "STOPPED");
-	enqueue(q, current_proc);
 }
 
 void continueHandler(int signum) {
@@ -226,15 +224,16 @@ void round_robin(queue *q, int quantum) {
 				execl(path, current_proc->name, NULL);
 			}else{
 				current_proc->pid = pid;
-				print("1\n")
 				sleep(quantum);
+				printf("1\n")
 				kill(current_proc->pid, SIGSTOP);
 				if(wait(&status) > 0){
 					if(WIFEXITED(status)){
 						strcpy(current_proc->state, "EXITED");
 					}
 				}else{
-					
+					strcpy(current_proc->state, "STOPPED");
+					enqueue(q, current_proc);
 				}
 			}
 		}
