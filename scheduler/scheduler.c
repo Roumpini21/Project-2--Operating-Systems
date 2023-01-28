@@ -19,6 +19,7 @@ struct proc {
 	struct proc* next;
     struct proc* prev;
 	char state[10];
+	int status;
 }typedef proc;
 
 struct Queue {
@@ -171,8 +172,7 @@ void print(queue* q){
 
 void childHandler(int signum) {
 	int status;
-	waitpid(current_process->pid, &current_process->status, WNOHANG); 
-	int status;
+	waitpid(process->pid, &process->status, WNOHANG);
 }
 
 void batch_sjf(queue* q){
