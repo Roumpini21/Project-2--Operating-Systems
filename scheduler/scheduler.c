@@ -197,7 +197,7 @@ void batch_sjf(queue* q){
 	printf("WORKLOAD TIME: %.3f seconds\n", current_proc->wt);
 }
 
-void round_robin(queue *q, int quantum) {
+void round_robin(queue *q, int quantum){
     int total_time = 0;
 	int status;
 	struct proc* current_proc;
@@ -219,6 +219,7 @@ void round_robin(queue *q, int quantum) {
 				sleep(quantum);
 				kill(current_proc->pid, SIGSTOP);
 				printf("1\n");
+				wait(&status);
 				if(WIFEXITED(status)){
 					printf("%s test", current_proc->state);
 					strcpy(current_proc->state, "EXITED");
@@ -232,8 +233,7 @@ void round_robin(queue *q, int quantum) {
 	}
 }
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv){
 	signal(SIGCHLD, childHandler);
 	/* local variables */
 	struct Queue* queue1 = createQueue();
