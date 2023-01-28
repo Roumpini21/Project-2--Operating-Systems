@@ -167,7 +167,11 @@ void print(queue* q){
 
 /* signal handler(s) */
 
-void childHandler(int signum) {}
+void childHandler(int signum) {
+	int status;
+    pid_t pid = wait(&status);
+	strcpy(current_proc->state, "EXITED");
+}
 
 void batch_sjf(queue* q){
 	struct timespec start_time, end_time;
@@ -210,10 +214,13 @@ void round_robin(queue *q, int quantum){
 			kill(current_proc->pid, SIGCONT);
 			strcpy(current_proc->state, "RUNNING");
 			sleep(quantum);
-			kill(current_proc->pid, SIGSTOP);
-			strcpy(current_proc->state, "STOPPED");
-			enqueue(q, current_proc);
-			print(q);
+			if(!strcmp(current_proc->state, "EXITED")){
+				break;
+			}else{
+				kill(current_proc->pid, SIGSTOP);
+				strcpy(current_proc->state, "STOPPED");
+				enqueue(q, current_proc);
+			}
 		}else{
 			int pid = fork();
 			if(pid == 0){
@@ -223,20 +230,20 @@ void round_robin(queue *q, int quantum){
 				current_proc->pid = pid;
 				sleep(quantum);
 				kill(current_proc->pid, SIGSTOP);
-				if(WIFEXITED(status)) {
-					strcpy(current_proc->state, "EXITED");
-				}else{
-					strcpy(current_proc->state, "STOPPED");
-					enqueue(q, current_proc);
-				}
+				strcpy(current_proc->state, "STOPPED");
+				enqueue(q, current_proc);
 			}
-		print(q);
 		}
 	}
 }
 
 int main(int argc, char **argv){
-	signal(SIGCHLD, childHandler);
+	struct sigaction sa;
+	sa.sa_handler = childHandler;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = SA_RESTART;
+    sigaction(SIGCHLD, &sa, NULL);
+
 	/* local variables */
 	struct Queue* queue1 = createQueue();
 	FILE * fp;
