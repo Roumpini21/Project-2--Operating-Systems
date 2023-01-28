@@ -62,7 +62,7 @@ struct proc* deQueue(struct Queue* q) {
 }
 
 void enqueue(queue *q, proc *proc) {
-    struct proc *temp = (struct proc *) malloc(sizeof(struct proc));
+    struct proc *temp = (struct proc*) malloc(sizeof(struct proc));
     temp = proc;
     temp->next = NULL;
     temp->prev = q->end;
