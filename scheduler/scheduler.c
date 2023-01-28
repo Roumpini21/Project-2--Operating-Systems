@@ -169,7 +169,7 @@ void print(queue* q){
 
 void childHandler(int signum) {
 	int status;
-    pid_t pid = wait(&status);
+
 }
 
 void batch_sjf(queue* q){
