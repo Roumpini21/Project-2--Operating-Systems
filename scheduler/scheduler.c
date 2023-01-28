@@ -196,6 +196,21 @@ void batch_sjf(queue* q){
     }
 	printf("WORKLOAD TIME: %.3f seconds\n", current_proc->wt);
 }
+void rr_par(queue *q, proc* procedure, int quant){
+	strcpy(procedure->state, "RUNNING");
+	procedure->pid = pid;
+	sleep(quant);
+	kill(procedure->pid, SIGSTOP);
+	printf("1\n");
+	if(WIFEXITED(status)){
+		printf("%s test", procedure->state);
+		strcpy(procedure->state, "EXITED");
+	}
+	else{
+		strcpy(procedure->state, "STOPPED");
+		enqueue(q, procedure);
+	}
+}
 
 void round_robin(queue *q, int quantum){
     int total_time = 0;
@@ -208,26 +223,14 @@ void round_robin(queue *q, int quantum){
 		strcat(path, current_proc->name);
 		if(!strcmp(current_proc->state, "STOPPED")){
 			kill(current_proc->pid, SIGCONT);
+			rr_par(q, current_proc, quantum);
 		}
 		else{
 			int pid = fork();
 			if(pid == 0){
 				execl(path, current_proc->name, NULL);
 			}else{
-				strcpy(current_proc->state, "RUNNING");
-				current_proc->pid = pid;
-				sleep(quantum);
-				kill(current_proc->pid, SIGSTOP);
-				printf("1\n");
-				wait(&status);
-				if(WIFEXITED(status)){
-					printf("%s test", current_proc->state);
-					strcpy(current_proc->state, "EXITED");
-				}
-				else{
-					strcpy(current_proc->state, "STOPPED");
-					enqueue(q, current_proc);
-				}
+				rr_par(q, current_proc, quantum);
 			}
 		}
 	}
