@@ -169,7 +169,7 @@ void print(queue* q){
 
 /* signal handler(s) */
 
-void childHandler(int signum) {
+void childHandler(int signum, siginfo_t* info, void* ptr) {
 	proc* ptr = glblqueue->head;
 	int status;
     pid_t pid = wait(&status);
@@ -249,7 +249,7 @@ int main(int argc, char **argv){
 	struct sigaction sa;
 	sa.sa_handler = childHandler;
     sigemptyset(&sa.sa_mask);
-    sa.sa_flags = SA_RESTART;
+    sa.sa_flags = SA_SIGINFO;
     sigaction(SIGCHLD, &sa, NULL);
 	/* local variables */
 	struct Queue* queue1 = createQueue();
