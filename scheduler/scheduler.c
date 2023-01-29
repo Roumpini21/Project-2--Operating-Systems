@@ -231,8 +231,8 @@ void round_robin(queue *q, int quantum){
 		}
 		sleep(quantum);
 		kill(current_proc->pid, SIGSTOP);
-		enqueue(q, current_proc);
 		strcpy(current_proc->state, "STOPPED");
+		enqueue(q, current_proc);
 	}
 }
 
