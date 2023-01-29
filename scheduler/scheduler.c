@@ -218,10 +218,10 @@ void round_robin(queue *q, int quantum){
 		if(!strcmp(current_proc->state, "STOPPED")){
 			kill(current_proc->pid, SIGCONT);
 			strcpy(current_proc->state, "RUNNING");
-			sleep(quantum);
 			if(!strcmp(current_proc->state, "EXITED")){
 				continue;
 			}else{
+				sleep(quantum);
 				kill(current_proc->pid, SIGSTOP);
 				strcpy(current_proc->state, "STOPPED");
 				enqueue(q, current_proc);
