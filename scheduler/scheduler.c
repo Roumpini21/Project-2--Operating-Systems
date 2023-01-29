@@ -73,6 +73,7 @@ void enqueue(queue *q, proc *proc) {
     }
     q->end->next = proc;
     q->end = proc;
+	printf("%d\n", q->head->pid);
 	print(q);
 }
 
