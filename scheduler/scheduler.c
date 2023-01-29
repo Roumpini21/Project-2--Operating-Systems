@@ -162,9 +162,9 @@ void print(queue* q){
 	struct proc* ptr = q->head;
 	while(ptr!=NULL){
 		printf("%d\n", ptr->pid);
-		printf("------------------------------------------\n");
 		ptr = ptr->next;
 	}
+	printf("------------------------------------------\n");
 }
 
 /* signal handler(s) */
