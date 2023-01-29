@@ -6,7 +6,6 @@
 #include <string.h>
 #include <sys/wait.h>
 #include <signal.h>
-/* header files */
 
 /* global definitions */
 struct proc {
@@ -66,16 +65,14 @@ struct proc* deQueue(struct Queue* q) {
 }
 
 void enqueue(queue *q, proc *proc) {
-    struct proc *temp = (struct proc*) malloc(sizeof(struct proc));
-    temp = proc;
-    temp->next = NULL;
-    temp->prev = q->end;
+    proc->next = NULL;
+    proc->prev = q->end;
     if(q->end == NULL) {
-        q->head = q->end = temp;
+        q->head = q->end = proc;
         return;
     }
-    q->end->next = temp;
-    q->end = temp;
+    q->end->next = proc;
+    q->end = proc;
 }
 
 void bubble_batch(queue* q){
