@@ -27,7 +27,7 @@ struct Queue {
 }typedef queue;
 
 proc *process;
-
+int count = 0;
 /* definition and implementation of process descriptor and queue(s) */
 void newProc(queue * q){
 	proc* temp = (struct proc*)malloc(sizeof(struct proc));
@@ -160,7 +160,6 @@ void fill_queue (queue* q, FILE* fp, int option) {
 
 void print(queue* q){
 	struct proc* ptr = q->head;
-	int count = 0;
 	while(ptr!=NULL){
 		printf("%d\n", ptr->pid);
 		ptr = ptr->next;
@@ -219,14 +218,16 @@ void round_robin(queue *q, int quantum){
 		if(!strcmp(current_proc->state, "STOPPED")){
 			kill(current_proc->pid, SIGCONT);
 			strcpy(current_proc->state, "RUNNING");
-			sleep(quantum);
-			if(!strcmp(current_proc->state, "EXITED")){
-				continue;
-			}else{
-				kill(current_proc->pid, SIGSTOP);
-				strcpy(current_proc->state, "STOPPED");
-				enqueue(q, current_proc);
+			if(!sleep(quantum)){
+				if(!strcmp(current_proc->state, "EXITED")){
+					continue;
+				}else{
+					kill(current_proc->pid, SIGSTOP);
+					strcpy(current_proc->state, "STOPPED");
+					enqueue(q, current_proc);
 			}
+		}
+			
 		}else{
 			int pid = fork();
 			if(pid == 0){
