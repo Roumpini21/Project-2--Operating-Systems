@@ -71,9 +71,10 @@ void enqueue(queue *q, proc *proc) {
         q->head = q->end = proc;
         return;
     }
+	q->head = q->head->next;
     q->end->next = proc;
     q->end = proc;
-	printf("%d\n", q->head->pid);
+	printf("%d", q->head->pid);
 	print(q);
 }
 
