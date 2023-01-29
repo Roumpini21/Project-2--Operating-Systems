@@ -160,11 +160,13 @@ void fill_queue (queue* q, FILE* fp, int option) {
 
 void print(queue* q){
 	struct proc* ptr = q->head;
+	int count = 0;
 	while(ptr!=NULL){
 		printf("%d\n", ptr->pid);
 		ptr = ptr->next;
 	}
-	printf("------------------------------------------\n");
+	count++;
+	printf("%d------------------------------------------\n", count);
 }
 
 /* signal handler(s) */
