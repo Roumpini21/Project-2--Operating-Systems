@@ -51,7 +51,7 @@ struct Queue* createQueue() {
 }
 
 // Removes the head key from the queue
-struct proc* deQueue(struct Queue* q) {
+struct proc* deQueue(queue* q) {
     struct proc* temp = q->head;
     if (q->head->next != NULL){
         q->head = q->head->next;
@@ -161,7 +161,7 @@ void fill_queue (queue* q, FILE* fp, int option) {
 void print(queue* q){
 	struct proc* ptr = q->head;
 	while(ptr!=NULL){
-		printf("%s\n", ptr->name);
+		printf("%d\n", ptr->pid);
 		ptr = ptr->next;
 	}
 	count++;
@@ -268,7 +268,7 @@ int main(int argc, char **argv){
 		printf("RR Algorithm Selected.\n");
 		fill_queue(queue1, fp, 3);
 		print(queue1);
-		//round_robin(queue1, (atoi(argv[2])/1000));
+		round_robin(queue1, (atoi(argv[2])/1000));
 	}else if(!strcmp(argv[1], "PRIO")){
 		printf("PRIO Algorithm Selected.\n");
 	}else{printf("Error Occured.");}
