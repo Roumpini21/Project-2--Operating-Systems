@@ -209,9 +209,10 @@ void round_robin(queue *q, int quantum){
 	int status;
 	signal(SIGCHLD, childHandler);
 	struct proc* current_proc;
+	q->end->next = q->head;
 	char path[20] = "";
+	current_proc = q->head;
     while(q->head != NULL){
-		current_proc = deQueue(q);
 		process = current_proc;
 		strcpy(path, "../work/");
 		strcat(path, current_proc->name);
@@ -224,7 +225,6 @@ void round_robin(queue *q, int quantum){
 				sleep(quantum);
 				kill(current_proc->pid, SIGSTOP);
 				strcpy(current_proc->state, "STOPPED");
-				enqueue(q, current_proc);
 			}
 		}else{
 			int pid = fork();
@@ -236,10 +236,10 @@ void round_robin(queue *q, int quantum){
 				sleep(quantum);
 				kill(current_proc->pid, SIGSTOP);
 				strcpy(current_proc->state, "STOPPED");
-				enqueue(q, current_proc);
 			}
 		}
 	}
+	current_proc = q->head->next;
 }
 
 int main(int argc, char **argv){
