@@ -174,7 +174,7 @@ void print(queue* q){
 void childHandler(int signum) {
 	if(process->pid == waitpid(process->pid, &process->status, WNOHANG)){
 		strcpy(process->state, "EXITED");
-		printf("PID %d - CMD: %s \n\t\t Elapsed time: %.3f secs \n\t\t Workload Time: %.3f secs.\n", current_proc->pid, current_proc->name, elapsed_time, current_proc->wt);
+		printf("PID %d - CMD: %s \n\t\t Elapsed time: %.3f secs \n\t\t Workload Time: %.3f secs.\n", process->pid, process->name, elapsed_time, process->wt);
 	}
 }
 
