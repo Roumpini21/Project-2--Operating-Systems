@@ -161,7 +161,7 @@ void fill_queue (queue* q, FILE* fp, int option) {
 void print(queue* q){
 	struct proc* ptr = q->head;
 	while(ptr!=NULL){
-		printf("%d\n", ptr->pid);
+		printf("%s\n", ptr->name);
 		ptr = ptr->next;
 	}
 	count++;
@@ -266,6 +266,7 @@ int main(int argc, char **argv){
 		int quantum;
 		option = 3;
 		printf("RR Algorithm Selected.\n");
+		print(queue1);
 		fill_queue(queue1, fp, 3);
 		round_robin(queue1, (atoi(argv[2])/1000));
 	}else if(!strcmp(argv[1], "PRIO")){
