@@ -220,14 +220,10 @@ void round_robin(queue *q, int quantum){
 		if(!strcmp(current_proc->state, "STOPPED")){
 			kill(current_proc->pid, SIGCONT);
 			strcpy(current_proc->state, "RUNNING");
-			if(!strcmp(current_proc->state, "EXITED")){
-				continue;
-			}else{
-				nanosleep(&tim, &tim2);
-				kill(current_proc->pid, SIGSTOP);
-				strcpy(current_proc->state, "STOPPED");
-				enqueue(q, current_proc);
-			}
+			nanosleep(&tim, &tim2);
+			kill(current_proc->pid, SIGSTOP);
+			strcpy(current_proc->state, "STOPPED");
+			enqueue(q, current_proc);
 		}else{
 			int pid = fork();
 			if(pid == 0){
