@@ -56,7 +56,7 @@ void print(queue* q){
 		printf("%s\n", ptr->state);
 		ptr = ptr->next;
 	}
-	print("-----------------------------------");
+	printf("-----------------------------------");
 }
 
 // Removes the head key from the queue
