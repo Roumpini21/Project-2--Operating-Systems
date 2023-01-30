@@ -210,7 +210,6 @@ void round_robin(queue *q, int quantum){
 	char path[20] = "";
     while(q->head != NULL){
 		current_proc = deQueue(q);
-		clock_gettime(CLOCK_MONOTONIC, &start_time);
 		process = current_proc;
 		strcpy(path, "../work/");
 		strcat(path, current_proc->name);
