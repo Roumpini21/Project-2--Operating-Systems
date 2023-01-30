@@ -220,7 +220,7 @@ void round_robin(queue *q, int quantum){
 			strcpy(current_proc->state, "RUNNING");
 			if(!strcmp(current_proc->state, "RUNNING")){
 				printf("Hi\n");
-				/*kill(current_proc->pid, SIGCONT);
+				kill(current_proc->pid, SIGCONT);/*
 				nanosleep(&tim, &tim2);
 				kill(current_proc->pid, SIGSTOP);
 				strcpy(current_proc->state, "STOPPED");
