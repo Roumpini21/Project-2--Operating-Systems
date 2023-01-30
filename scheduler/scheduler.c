@@ -15,10 +15,10 @@ struct proc {
 	int at; //Arrival Time
 	int bt; //Burst Time
 	float wt; //Work Time
-	struct proc* next;
-    struct proc* prev;
 	char state[10];
 	int status;
+	struct proc* next;
+    struct proc* prev;
 }typedef proc;
 
 struct Queue {
@@ -27,7 +27,6 @@ struct Queue {
 }typedef queue;
 
 proc *process;
-int count = 0;
 
 /* definition and implementation of process descriptor and queue(s) */
 void newProc(queue * q){
@@ -57,8 +56,6 @@ void print(queue* q){
 		printf("%s\n", ptr->state);
 		ptr = ptr->next;
 	}
-	count++;
-	printf("%d------------------------------------------\n", count);
 }
 
 // Removes the head key from the queue
@@ -204,14 +201,14 @@ void batch_sjf(queue* q){
 	printf("WORKLOAD TIME: %.3f seconds\n", current_proc->wt);
 }
 
-void round_robin2(queue *q, int quantum){
+void round_robin(queue *q, int quantum){
 	signal(SIGCHLD, childHandler);
 	struct timespec tim, tim2;
 	tim.tv_sec = quantum;
    	tim.tv_nsec = 0;
 	struct proc* current_proc;
 	char path[20] = "";
-	while(q->head != NULL){
+    while(q->head != NULL){
 		current_proc = deQueue(q);
 		process = current_proc;
 		strcpy(path, "../work/");
@@ -228,34 +225,6 @@ void round_robin2(queue *q, int quantum){
 				kill(current_proc->pid, SIGSTOP);
 				printf("Time elapsed.\n");
 			}
-		}
-	}
-}
-
-void round_robin(queue *q, int quantum){
-	//signal(SIGCHLD, childHandler);
-	struct timespec tim, tim2;
-	tim.tv_sec = quantum;
-   	tim.tv_nsec = 0;
-	struct proc* current_proc;
-	char path[20] = "";
-    while(q->head != NULL){
-		current_proc = deQueue(q);
-		process = current_proc;
-		strcpy(path, "../work/");
-		strcat(path, current_proc->name);
-		if(!strcmp(current_proc->state, "STOPPED")){
-			round_robin2(q, quantum);
-			/*strcpy(current_proc->state, "RUNNING");
-			if(!strcmp(current_proc->state, "RUNNING")){
-				printf("Hi from process %d\n", current_proc->pid);
-				enqueue(q, current_proc);
-				printf("%d\n", current_proc->pid);
-				kill(current_proc->pid, SIGCONT);
-				nanosleep(&tim, &tim2);
-				strcpy(current_proc->state, "STOPPED");
-				kill(current_proc->pid, SIGSTOP);
-				printf("Time elapsed.\n");*/
 		}else{
 			int pid = fork();
 			if(pid == 0){
@@ -271,7 +240,6 @@ void round_robin(queue *q, int quantum){
 		}
 	}
 }
-
 
 int main(int argc, char **argv){
 	/* local variables */
