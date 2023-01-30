@@ -239,6 +239,7 @@ void round_robin(queue *q, int quantum){
 			}
 		}
 	}
+	print(q);
 }
 
 int main(int argc, char **argv){
