@@ -223,11 +223,10 @@ void round_robin(queue *q, int quantum){
 				enqueue(q, current_proc);
 				printf("%d\n", current_proc->pid);
 				strcpy(current_proc->state, "STOPPED");
+				kill(current_proc->pid, SIGCONT);
 				nanosleep(&tim, &tim2);
 				printf("Time elapsed.\n");
 				/*
-				kill(current_proc->pid, SIGCONT);
-				
 				kill(current_proc->pid, SIGSTOP);
 				strcpy(current_proc->state, "STOPPED");*/
 			}
