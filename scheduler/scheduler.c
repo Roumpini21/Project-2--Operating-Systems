@@ -223,6 +223,7 @@ void round_robin(queue *q, int quantum){
 				nanosleep(&tim, &tim2);
 				strcpy(current_proc->state, "STOPPED");
 				kill(current_proc->pid, SIGSTOP);
+				print(q);
 			}
 		}else{
 			int pid = fork();
