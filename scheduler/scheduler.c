@@ -50,6 +50,16 @@ struct Queue* createQueue() {
     return q;
 }
 
+void print(queue* q){
+	struct proc* ptr = q->head;
+	while(ptr!=NULL){
+		printf("%d\n", ptr->pid);
+		ptr = ptr->next;
+	}
+	count++;
+	printf("%d------------------------------------------\n", count);
+}
+
 // Removes the head key from the queue
 struct proc* deQueue(queue* q) {
     struct proc* temp = q->head;
@@ -158,15 +168,7 @@ void fill_queue (queue* q, FILE* fp, int option) {
 	}
 }
 
-void print(queue* q){
-	struct proc* ptr = q->head;
-	while(ptr!=NULL){
-		printf("%d\n", ptr->pid);
-		ptr = ptr->next;
-	}
-	count++;
-	printf("%d------------------------------------------\n", count);
-}
+
 
 /* signal handler(s) */
 
