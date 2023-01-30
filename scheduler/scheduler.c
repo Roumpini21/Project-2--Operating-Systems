@@ -54,7 +54,7 @@ struct Queue* createQueue() {
 void print(queue* q){
 	struct proc* ptr = q->head;
 	while(ptr!=NULL){
-		printf("%d\n", ptr->pid);
+		printf("%s\n", ptr->state);
 		ptr = ptr->next;
 	}
 	count++;
