@@ -27,7 +27,7 @@ struct Queue {
 }typedef queue;
 
 proc *process;
-queue * queuer;
+
 /* definition and implementation of process descriptor and queue(s) */
 void newProc(queue * q){
 	proc* temp = (struct proc*)malloc(sizeof(struct proc));
@@ -56,7 +56,6 @@ void print(queue* q){
 		printf("%s\n", ptr->state);
 		ptr = ptr->next;
 	}
-	printf("-----------------------------------");
 }
 
 // Removes the head key from the queue
@@ -171,7 +170,6 @@ void fill_queue (queue* q, FILE* fp, int option) {
 void childHandler(int signum) {
 	if(process->pid == waitpid(process->pid, &process->status, WNOHANG)){
 		strcpy(process->state, "EXITED");
-		deQueue(queuer);
 	}
 }
 
@@ -215,9 +213,7 @@ void round_robin(queue *q, int quantum){
 		process = current_proc;
 		strcpy(path, "../work/");
 		strcat(path, current_proc->name);
-		if(!strcmp(current_proc->state, "EXITED")){
-			deQueue(q);
-		}else if(!strcmp(current_proc->state, "STOPPED")){
+		if(!strcmp(current_proc->state, "STOPPED")){
 			strcpy(current_proc->state, "RUNNING");
 			if(!strcmp(current_proc->state, "RUNNING")){
 				enqueue(q, current_proc);
@@ -225,7 +221,7 @@ void round_robin(queue *q, int quantum){
 				nanosleep(&tim, &tim2);
 				strcpy(current_proc->state, "STOPPED");
 				kill(current_proc->pid, SIGSTOP);
-				print(q);
+
 			}
 		}else{
 			int pid = fork();
@@ -247,7 +243,6 @@ void round_robin(queue *q, int quantum){
 int main(int argc, char **argv){
 	/* local variables */
 	struct Queue* queue1 = createQueue();
-	queuer = queue1;
 	FILE * fp;
 	int option = 0;
 	/* parse input arguments (policy, quantum (if required), input filename */
