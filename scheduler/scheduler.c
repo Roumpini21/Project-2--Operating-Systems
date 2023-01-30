@@ -219,7 +219,7 @@ void round_robin(queue *q, int quantum){
 		strcat(path, current_proc->name);
 		if(!strcmp(current_proc->state, "STOPPED")){
 			strcpy(current_proc->state, "RUNNING");
-			printf("Hello STUPID PROGRAM");
+			printf("%s \n", current_proc->state);
 			if(!strcpy(current_proc->state, "RUNNING")){
 				printf("Hello STUPID PROGRAM2");
 				kill(current_proc->pid, SIGCONT);
