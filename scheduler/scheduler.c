@@ -213,7 +213,9 @@ void round_robin(queue *q, int quantum){
 		process = current_proc;
 		strcpy(path, "../work/");
 		strcat(path, current_proc->name);
-		if(!strcmp(current_proc->state, "STOPPED")){
+		if(!strcmp(current_proc->state, "EXITED")){
+			deQueue(q);
+		}else if(!strcmp(current_proc->state, "STOPPED")){
 			strcpy(current_proc->state, "RUNNING");
 			if(!strcmp(current_proc->state, "RUNNING")){
 				enqueue(q, current_proc);
@@ -266,7 +268,7 @@ int main(int argc, char **argv){
 		option = 3;
 		printf("RR Algorithm Selected.\n");
 		fill_queue(queue1, fp, 3);
-		print(queue1);
+		//print(queue1);
 		round_robin(queue1, (atoi(argv[2])/1000));
 	}else if(!strcmp(argv[1], "PRIO")){
 		printf("PRIO Algorithm Selected.\n");
