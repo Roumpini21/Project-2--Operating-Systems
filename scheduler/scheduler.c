@@ -28,6 +28,7 @@ struct Queue {
 
 proc *process;
 int count = 0;
+
 /* definition and implementation of process descriptor and queue(s) */
 void newProc(queue * q){
 	proc* temp = (struct proc*)malloc(sizeof(struct proc));
@@ -168,8 +169,6 @@ void fill_queue (queue* q, FILE* fp, int option) {
 	}
 }
 
-
-
 /* signal handler(s) */
 
 void childHandler(int signum) {
@@ -208,6 +207,7 @@ void batch_sjf(queue* q){
 
 void round_robin(queue *q, int quantum){
 	signal(SIGCHLD, childHandler);
+	struct timespec tim, tim2 = {quantum, 0};
 	struct proc* current_proc;
 	char path[20] = "";
     while(q->head != NULL){
@@ -221,7 +221,7 @@ void round_robin(queue *q, int quantum){
 			if(!strcmp(current_proc->state, "EXITED")){
 				continue;
 			}else{
-				sleep(quantum);
+				nanosleep(&tim, &tim2);
 				kill(current_proc->pid, SIGSTOP);
 				strcpy(current_proc->state, "STOPPED");
 				enqueue(q, current_proc);
@@ -233,7 +233,7 @@ void round_robin(queue *q, int quantum){
 			}else{
 				strcpy(current_proc->state, "RUNNING");
 				current_proc->pid = pid;
-				sleep(quantum);
+				nanosleep(&tim, &tim2);
 				kill(current_proc->pid, SIGSTOP);
 				strcpy(current_proc->state, "STOPPED");
 				enqueue(q, current_proc);
