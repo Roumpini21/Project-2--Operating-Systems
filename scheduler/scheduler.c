@@ -171,6 +171,7 @@ void fill_queue (queue* q, FILE* fp, int option) {
 void childHandler(int signum) {
 	if(process->pid == waitpid(process->pid, &process->status, WNOHANG)){
 		strcpy(process->state, "EXITED");
+		deQueue(q);
 	}
 }
 
