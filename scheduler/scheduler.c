@@ -207,7 +207,9 @@ void batch_sjf(queue* q){
 
 void round_robin(queue *q, int quantum){
 	signal(SIGCHLD, childHandler);
-	struct timespec tim, tim2 = {quantum, 0};
+	struct timespec tim, tim2;
+	tim.tv_sec = quantum;
+   	tim.tv_nsec = 0;
 	struct proc* current_proc;
 	char path[20] = "";
     while(q->head != NULL){
