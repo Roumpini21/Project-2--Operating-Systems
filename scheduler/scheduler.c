@@ -173,6 +173,7 @@ void print(queue* q){
 void childHandler(int signum) {
 	if(process->pid == waitpid(process->pid, &process->status, WNOHANG)){
 		strcpy(process->state, "EXITED");
+		printf("PID %d - CMD: %s \n\t\t Elapsed time: %.3f secs \n\t\t Workload Time: %.3f secs.\n", current_proc->pid, current_proc->name, elapsed_time, current_proc->wt);
 	}
 }
 
@@ -205,15 +206,15 @@ void batch_sjf(queue* q){
 }
 
 void round_robin(queue *q, int quantum){
-    int total_time = 0;
-	int status;
+    struct timespec start_time, end_time;
+	double elapsed_time = 0;
+	float temp_time = 0;
 	signal(SIGCHLD, childHandler);
 	struct proc* current_proc;
-	q->end->next = q->head;
 	char path[20] = "";
-	
     while(q->head != NULL){
-		current_proc = q->head;
+		current_proc = deQueue(q);
+		clock_gettime(CLOCK_MONOTONIC, &start_time);
 		process = current_proc;
 		strcpy(path, "../work/");
 		strcat(path, current_proc->name);
@@ -221,12 +222,21 @@ void round_robin(queue *q, int quantum){
 			kill(current_proc->pid, SIGCONT);
 			strcpy(current_proc->state, "RUNNING");
 			if(!strcmp(current_proc->state, "EXITED")){
+				strcpy(current_proc->state, "EXITED");
+            	clock_gettime(CLOCK_MONOTONIC, &end_time);
+				elapsed_time = (end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec) / 1000000000.0;
+				current_proc->bt = current_proc->bt + elapsed_time;
+				temp_time = temp_time + elapsed_time;
 				continue;
 			}else{
 				sleep(quantum);
 				kill(current_proc->pid, SIGSTOP);
 				strcpy(current_proc->state, "STOPPED");
-				q->head = q->head->next;
+				clock_gettime(CLOCK_MONOTONIC, &end_time);
+				elapsed_time = (end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec) / 1000000000.0;
+				current_proc->bt = current_proc->bt + elapsed_time;
+				temp_time = temp_time + elapsed_time;
+				enqueue(q, current_proc);
 			}
 		}else{
 			int pid = fork();
@@ -238,10 +248,13 @@ void round_robin(queue *q, int quantum){
 				sleep(quantum);
 				kill(current_proc->pid, SIGSTOP);
 				strcpy(current_proc->state, "STOPPED");
-				q->head = q->head->next;
+				clock_gettime(CLOCK_MONOTONIC, &end_time);
+				elapsed_time = (end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec) / 1000000000.0;
+				current_proc->bt = current_proc->bt + elapsed_time;
+				temp_time = temp_time + elapsed_time;
+				enqueue(q, current_proc);
 			}
 		}
-	print(q);
 	}
 }
 
