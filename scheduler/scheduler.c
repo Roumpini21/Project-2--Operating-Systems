@@ -241,8 +241,8 @@ void round_robin(queue *q, int quantum){
 				q->head = q->head->next;
 			}
 		}
-	}
 	print(q);
+	}
 }
 
 int main(int argc, char **argv){
