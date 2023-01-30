@@ -28,7 +28,6 @@ struct Queue {
 
 proc *process;
 int count = 0;
-float elapsed_time = 0;
 /* definition and implementation of process descriptor and queue(s) */
 void newProc(queue * q){
 	proc* temp = (struct proc*)malloc(sizeof(struct proc));
@@ -174,12 +173,12 @@ void print(queue* q){
 void childHandler(int signum) {
 	if(process->pid == waitpid(process->pid, &process->status, WNOHANG)){
 		strcpy(process->state, "EXITED");
-		printf("PID %d - CMD: %s \n\t\t Elapsed time: %.3f secs \n\t\t Workload Time: %.3f secs.\n", process->pid, process->name, elapsed_time, process->wt);
 	}
 }
 
 void batch_sjf(queue* q){
 	struct timespec start_time, end_time;
+	float temp_time = 0;
     struct proc* current_proc;
     while (q->head != NULL){
         current_proc = deQueue(q);
@@ -196,9 +195,9 @@ void batch_sjf(queue* q){
             wait(NULL);
 			strcpy(current_proc->state, "EXITED");
             clock_gettime(CLOCK_MONOTONIC, &end_time);
-            double time = (end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec) / 1000000000.0;
-			elapsed_time = time;
-			current_proc->wt = current_proc->wt + time;
+            double elapsed_time = (end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec) / 1000000000.0;
+			float temp_time = temp_time + elapsed_time;
+			current_proc->wt = temp_time;
             printf("PID %d - CMD: %s \n\t\t Elapsed time: %.3f secs \n\t\t Workload Time: %.3f secs.\n", current_proc->pid, current_proc->name, elapsed_time, current_proc->wt);
         }
     }
@@ -206,9 +205,6 @@ void batch_sjf(queue* q){
 }
 
 void round_robin(queue *q, int quantum){
-    struct timespec start_time, end_time;
-	double elapsed_time = 0;
-	float temp_time = 0;
 	signal(SIGCHLD, childHandler);
 	struct proc* current_proc;
 	char path[20] = "";
@@ -222,21 +218,11 @@ void round_robin(queue *q, int quantum){
 			kill(current_proc->pid, SIGCONT);
 			strcpy(current_proc->state, "RUNNING");
 			if(!strcmp(current_proc->state, "EXITED")){
-				strcpy(current_proc->state, "EXITED");
-            	clock_gettime(CLOCK_MONOTONIC, &end_time);
-				elapsed_time = (end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec) / 1000000000.0;
-				current_proc->bt = current_proc->bt + elapsed_time;
-				temp_time = temp_time + elapsed_time;
-				current_proc->
 				continue;
 			}else{
 				sleep(quantum);
 				kill(current_proc->pid, SIGSTOP);
 				strcpy(current_proc->state, "STOPPED");
-				clock_gettime(CLOCK_MONOTONIC, &end_time);
-				elapsed_time = (end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec) / 1000000000.0;
-				current_proc->bt = current_proc->bt + elapsed_time;
-				temp_time = temp_time + elapsed_time;
 				enqueue(q, current_proc);
 			}
 		}else{
@@ -249,10 +235,6 @@ void round_robin(queue *q, int quantum){
 				sleep(quantum);
 				kill(current_proc->pid, SIGSTOP);
 				strcpy(current_proc->state, "STOPPED");
-				clock_gettime(CLOCK_MONOTONIC, &end_time);
-				elapsed_time = (end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec) / 1000000000.0;
-				current_proc->bt = current_proc->bt + elapsed_time;
-				temp_time = temp_time + elapsed_time;
 				enqueue(q, current_proc);
 			}
 		}
