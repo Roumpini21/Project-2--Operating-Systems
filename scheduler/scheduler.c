@@ -84,7 +84,6 @@ void enqueue(queue *q, proc *proc) {
     }
     q->end->next = proc;
     q->end = proc;
-	print(q);
 }
 
 void bubble_batch(queue* q){
