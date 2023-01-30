@@ -236,10 +236,10 @@ void round_robin(queue *q, int quantum){
 				sleep(quantum);
 				kill(current_proc->pid, SIGSTOP);
 				strcpy(current_proc->state, "STOPPED");
-				print(q);
 			}
 		}
 	}
+	print(q);
 	current_proc = q->head->next;
 }
 
