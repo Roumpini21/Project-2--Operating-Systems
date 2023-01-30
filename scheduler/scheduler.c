@@ -185,9 +185,9 @@ void batch_sjf(queue* q){
 		strcat(path, current_proc->name);
 		int pid = fork();
         if (pid == 0){
-			strcpy(current_proc->state, "RUNNING");
             execl(path, current_proc->name, NULL);
         }else{
+			strcpy(current_proc->state, "RUNNING");
 			current_proc->pid = pid;
             wait(NULL);
 			strcpy(current_proc->state, "EXITED");
@@ -219,9 +219,11 @@ void round_robin(queue *q, int quantum){
 				enqueue(q, current_proc);
 				kill(current_proc->pid, SIGCONT);
 				nanosleep(&tim, &tim2);
+				if(!strcmp(current_proc->state, "EXITED")){
+					continue;
+				}
 				strcpy(current_proc->state, "STOPPED");
 				kill(current_proc->pid, SIGSTOP);
-
 			}
 		}else{
 			int pid = fork();
