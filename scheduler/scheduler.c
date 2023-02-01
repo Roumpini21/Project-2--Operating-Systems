@@ -32,7 +32,6 @@ struct Queue {
 proc *g_proc;
 struct timespec start_t, end_t;
 
-/* definition and implementation of process descriptor and queue(s) */
 void newProc(queue * q){
 	proc* temp = (struct proc*)malloc(sizeof(struct proc));
 	
@@ -47,7 +46,6 @@ void newProc(queue * q){
 	q->end = temp;
 }
 
-// Creates an empty queue and returns a pointer to it.
 struct Queue* createQueue() {
     struct Queue* q = (struct Queue*)malloc(sizeof(struct Queue));
     q->head = q->end = NULL;
@@ -62,7 +60,6 @@ void print(queue* q){
 	}
 }
 
-// Removes the head key from the queue
 struct proc* deQueue(queue* q) {
     struct proc* temp = q->head;
     if (q->head->next != NULL){
@@ -169,8 +166,6 @@ void fill_queue (queue* q, FILE* fp, int option) {
 	}
 }
 
-/* signal handler(s) */
-
 void childHandler(int signum) {
 	proc *p = g_proc;
 	int status;
@@ -263,45 +258,38 @@ void round_robin(queue *q, int quantum){
 			p->wt = temp_time;
 		}
 		kill(p->pid, SIGSTOP);
-
 		strcpy(p->state, "STOPPED");
 		enqueue(temp_q, p);
 	}
 }
 
 int main(int argc, char **argv){
-	/* local variables */
 	struct Queue* queue1 = createQueue();
 	FILE * fp;
 	int option = 0;
-	/* parse input arguments (policy, quantum (if required), input filename */
+
 	if (argv[3] != NULL){fp = fopen(argv[3], "r+");}
 	else {fp = fopen(argv[2], "r+");}
-	/* read input file - populate queue */
 	
 	if(!strcmp(argv[1], "BATCH")){
 		option = 1;
 		printf("Batch Algorithm Selected.\n");
 		fill_queue(queue1, fp, 1);
-		//print(queue1);
 		batch_sjf(queue1);
 	}else if(!strcmp(argv[1], "SJF")){
 		option = 2;
 		printf("SJF Algorithm Selected.\n");
 		fill_queue(queue1, fp, 2);
-		//print(queue1);
 		batch_sjf(queue1);
 	}else if(!strcmp(argv[1], "RR")){
 		int quantum;
 		option = 3;
 		printf("RR Algorithm Selected.\n");
 		fill_queue(queue1, fp, 3);
-		//print(queue1);
 		round_robin(queue1, (atoi(argv[2])/1000));
 	}else if(!strcmp(argv[1], "PRIO")){
 		printf("PRIO Algorithm Selected.\n");
 	}else{printf("Error Occured.");}
-
 	fclose(fp);
 	printf("Scheduler exits\n");
 	return 0;
