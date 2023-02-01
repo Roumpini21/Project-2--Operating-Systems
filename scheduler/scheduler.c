@@ -255,6 +255,7 @@ void round_robin(queue *q, int quantum){
 			continue;
 		}else{
 			clock_gettime(CLOCK_MONOTONIC, &end_time);
+			clock_gettime(CLOCK_MONOTONIC, &end_t);
 			elapsed_time = (end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec) / 1000000000.0;
 			p->bt += elapsed_time;
 			temp_time +=elapsed_time;
