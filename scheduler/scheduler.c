@@ -26,8 +26,6 @@ struct Queue {
     struct proc* end;
 }typedef queue;
 
-proc *process;
-
 /* definition and implementation of process descriptor and queue(s) */
 void newProc(queue * q){
 	proc* temp = (struct proc*)malloc(sizeof(struct proc));
@@ -202,41 +200,43 @@ void batch_sjf(queue* q){
 }
 
 void round_robin(queue *q, int quantum){
+	queue *temp_q = createQueue();
+	proc *p;
 	signal(SIGCHLD, childHandler);
 	struct timespec tim, tim2;
 	tim.tv_sec = quantum;
    	tim.tv_nsec = 0;
-	struct proc* current_proc;
 	char path[20] = "";
+	strcpy(path, "../work/");
+	strcat(path, current_proc->name);
+
     while(q->head != NULL){
-		current_proc = deQueue(q);
-		process = current_proc;
-		strcpy(path, "../work/");
-		strcat(path, current_proc->name);
-		if(!strcmp(current_proc->state, "STOPPED")){
-			strcpy(current_proc->state, "RUNNING");
-			if(!strcmp(current_proc->state, "RUNNING")){
-				enqueue(q, current_proc);
-				kill(current_proc->pid, SIGCONT);
-				nanosleep(&tim, &tim2);
-				strcpy(current_proc->state, "STOPPED");
-				kill(current_proc->pid, SIGSTOP);
-			}
-		}else{
+		p = deQueue(q);
+		enqueue(temp_q, p);
+	}
+	while(temp_q->head != NULL){
+		p = deQueue(temp_q);
+
+		if(!strcmp(p->state, "READY")){
 			int pid = fork();
 			if(pid == 0){
-				execl(path, current_proc->name, NULL);
-			}else{
-				strcpy(current_proc->state, "RUNNING");
-				current_proc->pid = pid;
-				nanosleep(&tim, &tim2);
-				kill(current_proc->pid, SIGSTOP);
-				strcpy(current_proc->state, "STOPPED");
-				enqueue(q, current_proc);
+				execl(path, p->name, NULL);
 			}
+		}else kill (p->pid, SIGCONT);
+
+		strcpy(p->state, "RUNNING");
+
+		nanosleep(&tim, &tim2);
+
+		if(!strcmp(p->state, "EXITED")){
+			enqueue(q, p);
+			continue;
 		}
+		kill(p->pid, SIGSTOP);
+
+		strcpy(p->state, "STOPPED");
+		enqueue(temp_q, p);
 	}
-	print(q);
 }
 
 int main(int argc, char **argv){
