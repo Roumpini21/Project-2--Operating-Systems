@@ -208,6 +208,7 @@ void round_robin(queue *q, int quantum){
 	sact.sa_handler = childHandler;
 	sigemptyset(&sact.sa_mask);
 	sact.sa_flags = SA_NOCLDSTOP;
+	sigaction(SIGCHLD, &sact, NULL);
 
 	struct timespec tim, tim2;
 	tim.tv_sec = quantum;
@@ -227,7 +228,7 @@ void round_robin(queue *q, int quantum){
 
 		if(!strcmp(p->state, "READY")){
 			if((p->pid = fork()) == 0){
-				execlp(path, p->name, NULL);
+				execl(path, p->name, NULL);
 				exit(1);
 			}else if(p->pid < 0) exit(1);
 		}else kill (p->pid, SIGCONT);
