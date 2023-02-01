@@ -26,6 +26,8 @@ struct Queue {
     struct proc* end;
 }typedef queue;
 
+proc *g_proc;
+
 /* definition and implementation of process descriptor and queue(s) */
 void newProc(queue * q){
 	proc* temp = (struct proc*)malloc(sizeof(struct proc));
@@ -166,8 +168,8 @@ void fill_queue (queue* q, FILE* fp, int option) {
 /* signal handler(s) */
 
 void childHandler(int signum) {
-	if(process->pid == waitpid(process->pid, &process->status, WNOHANG)){
-		strcpy(process->state, "EXITED");
+	if(g_proc->pid == waitpid(g_proc->pid, &g_proc->status, WNOHANG)){
+		strcpy(g_proc->state, "EXITED");
 	}
 }
 
@@ -216,6 +218,8 @@ void round_robin(queue *q, int quantum){
 	}
 	while(temp_q->head != NULL){
 		p = deQueue(temp_q);
+
+		g_proc = p;
 
 		if(!strcmp(p->state, "READY")){
 			int pid = fork();
