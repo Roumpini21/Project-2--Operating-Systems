@@ -169,6 +169,7 @@ void fill_queue (queue* q, FILE* fp, int option) {
 
 void childHandler(int signum) {
 	proc *p = g_proc;
+	waitpid(p->pid, &status, 0);
 	strcpy(p->state, "EXITED");
 }
 
