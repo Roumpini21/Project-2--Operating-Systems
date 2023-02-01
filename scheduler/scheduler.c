@@ -222,10 +222,9 @@ void round_robin(queue *q, int quantum){
 		g_proc = p;
 
 		if(!strcmp(p->state, "READY")){
-			int pid = fork();
-			if(pid == 0){
+			if((p->pid == fork()) == 0){
 				execl(path, p->name, NULL);
-			}else p->pid = pid;
+			}
 		}else kill (p->pid, SIGCONT);
 
 		strcpy(p->state, "RUNNING");
