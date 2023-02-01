@@ -13,7 +13,7 @@ struct proc {
 	int pid;
 	int priority;
 	int at; //Arrival Time
-	int bt; //Burst Time
+	float bt; //Burst Time
 	float wt; //Work Time
 	char state[10];
 	int status;
