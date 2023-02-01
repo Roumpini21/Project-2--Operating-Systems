@@ -214,6 +214,7 @@ void round_robin(queue *q, int quantum){
 		p = deQueue(q);
 		enqueue(temp_q, p);
 	}
+	print(temp_q);
 	while(temp_q->head != NULL){
 		p = deQueue(temp_q);
 		strcpy(path, "../work/");
