@@ -209,8 +209,6 @@ void round_robin(queue *q, int quantum){
 	tim.tv_sec = quantum;
    	tim.tv_nsec = 0;
 	char path[20] = "";
-	strcpy(path, "../work/");
-	strcat(path, current_proc->name);
 
     while(q->head != NULL){
 		p = deQueue(q);
@@ -218,7 +216,8 @@ void round_robin(queue *q, int quantum){
 	}
 	while(temp_q->head != NULL){
 		p = deQueue(temp_q);
-
+		strcpy(path, "../work/");
+		strcat(path, p->name);
 		g_proc = p;
 
 		if(!strcmp(p->state, "READY")){
