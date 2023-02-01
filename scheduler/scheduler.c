@@ -168,9 +168,8 @@ void fill_queue (queue* q, FILE* fp, int option) {
 /* signal handler(s) */
 
 void childHandler(int signum) {
-	if(g_proc->pid == waitpid(g_proc->pid, &g_proc->status, WNOHANG)){
-		strcpy(g_proc->state, "EXITED");
-	}
+	proc *p = g_proc;
+	strcpy(p->state, "EXITED");
 }
 
 void batch_sjf(queue* q){
@@ -204,7 +203,12 @@ void batch_sjf(queue* q){
 void round_robin(queue *q, int quantum){
 	queue *temp_q = createQueue();
 	proc *p;
-	signal(SIGCHLD, childHandler);
+	struct sigaction sact;
+
+	sact.sa_handler = childHandler;
+	sigemptyset(&sact.sa_mask);
+	sact.sa_flags = SA_NOCLDSTOP;
+
 	struct timespec tim, tim2;
 	tim.tv_sec = quantum;
    	tim.tv_nsec = 0;
