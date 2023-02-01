@@ -172,6 +172,7 @@ void childHandler(int signum) {
 	int status;
 	waitpid(p->pid, &status, 0);
 	strcpy(p->state, "EXITED");
+	printf("PID %d - CMD: %s \n\t\t Elapsed time: %.3f secs \n\t\t Workload Time: %.3f secs.\n", p->pid, p->name, p->bt, p->wt);
 }
 
 void batch_sjf(queue* q){
@@ -203,6 +204,8 @@ void batch_sjf(queue* q){
 }
 
 void round_robin(queue *q, int quantum){
+	struct timespec start_time, end_time;
+	float temp_time = 0;
 	queue *temp_q = createQueue();
 	proc *p;
 	struct sigaction sact;
@@ -221,8 +224,8 @@ void round_robin(queue *q, int quantum){
 		p = deQueue(q);
 		enqueue(temp_q, p);
 	}
-	print(temp_q);
 	while(temp_q->head != NULL){
+		clock_gettime(CLOCK_MONOTONIC, &start_time);
 		p = deQueue(temp_q);
 		strcpy(path, "../work/");
 		strcat(path, p->name);
@@ -238,6 +241,12 @@ void round_robin(queue *q, int quantum){
 		strcpy(p->state, "RUNNING");
 
 		nanosleep(&tim, &tim2);
+
+		clock_gettime(CLOCK_MONOTONIC, &end_time);
+		double elapsed_time = (end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec) / 1000000000.0;
+		p->bt += elapsed_time;
+		temp_time +=elapsed_time;
+		p->wt = temp_time;
 
 		if(!strcmp(p->state, "EXITED")){
 			enqueue(q, p);
