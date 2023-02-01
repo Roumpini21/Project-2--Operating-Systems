@@ -10,7 +10,6 @@
 #include <sys/wait.h>
 #include <signal.h>
 
-/* global definitions */
 struct proc {
 	char name[10];
 	int pid;
@@ -19,7 +18,6 @@ struct proc {
 	float bt; //Burst Time
 	float wt; //Work Time
 	char state[10];
-	int status;
 	struct proc* next;
     struct proc* prev;
 }typedef proc;
