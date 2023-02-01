@@ -28,7 +28,6 @@ struct Queue {
 
 proc *g_proc;
 struct timespec start_t, end_t;
-float temp_time = 0;
 
 /* definition and implementation of process descriptor and queue(s) */
 void newProc(queue * q){
@@ -176,8 +175,7 @@ void childHandler(int signum) {
 	clock_gettime(CLOCK_MONOTONIC, &end_t);
 	double elapsed_time = (end_t.tv_sec - start_t.tv_sec) + (end_t.tv_nsec - start_t.tv_nsec) / 1000000000.0;
 	p->bt += elapsed_time;
-	temp_time += elapsed_time;
-	p->wt += temp_time;
+	p->wt += elapsed_time;
 	strcpy(p->state, "EXITED");
 	printf("PID %d - CMD: %s \n\t\t Elapsed time: %.3f secs \n\t\t Workload Time: %.3f secs.\n", p->pid, p->name, p->bt, p->wt);
 }
@@ -213,6 +211,7 @@ void batch_sjf(queue* q){
 void round_robin(queue *q, int quantum){
 	struct timespec start_time, end_time;
 	double elapsed_time = 0;
+	float temp_time = 0;
 	queue *temp_q = createQueue();
 	proc *p;
 	struct sigaction sact;
@@ -255,7 +254,6 @@ void round_robin(queue *q, int quantum){
 			continue;
 		}else{
 			clock_gettime(CLOCK_MONOTONIC, &end_time);
-			clock_gettime(CLOCK_MONOTONIC, &end_t);
 			elapsed_time = (end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec) / 1000000000.0;
 			p->bt += elapsed_time;
 			temp_time +=elapsed_time;
